@@ -1,0 +1,67 @@
+#kt_app_root {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: multiply !important;
+    --tw-bg-opacity: 0.8;
+    background-color: rgb(55 65 81/var(--tw-bg-opacity));
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid #fff;
+}
+
+    .login-card input {
+        caret-color: #fff;
+        color: rgba(255, 255, 255, 1)
+    }
+        .login-card input:focus {
+            color:#FFF;
+        }
+    .login-card .input-group-text:not(.btn-eye) {
+            padding-right: 0;
+        }
+/*.glass-effect input {
+        background: rgba(255, 255, 255, 0.2);*/
+/*border: none;*/
+/*border-radius: 5px;
+        padding: 10px;
+        margin: 10px 0;
+        color: white;
+    }*/
+
+/*.glass-effect button {
+        background-color: #007bff;*/
+/*border: none;*/
+/*border-radius: 5px;
+        padding: 10px 20px;
+        color: white;
+        cursor: pointer;
+    }*/
+
+/*.glass-effect button:hover {
+            background-color: #0056b3;
+        }*/
+
+/*.header {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 14px;
+}*/
+
+/*    .header .right-buttons img {
+        margin-left: 10px;
+        cursor: pointer;
+    }
+*/
