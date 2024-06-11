@@ -1,4 +1,51 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
-
-// Write your JavaScript code.
+﻿function loadingButton(btn) {
+    var $this = $(btn);
+    //loadingPage();
+    $this.attr("data-kt-indicator", "on")
+    $this.prop("disabled", true);
+}
+function unloadingButton(btn) {
+    var $this = $(btn);
+    setTimeout(function () {
+        $this.prop("disabled", false);
+        $this.removeAttr("data-kt-indicator")
+        //unloadingPage();
+    }, 1000);
+}
+function showSuccessToastr(msg) {
+    toastr.clear()
+    toastr.success(msg);
+}
+function showWarningToastr(msg) {
+    toastr.clear()
+    toastr.warning(msg);
+}
+function showErrorToastr(msg) {
+    toastr.clear()
+    toastr.error(msg);
+}
+function getAjax(url, callback) {
+    $.get(url, callback);
+}
+function postAjax(url, formdata, callback) {
+    $.post(url, formdata, callback);
+}
+function filePostAjax(url, formData, callback) {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: new FormData(formData),
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            callback(response);
+        },
+    });
+}
+function deleteAjax(url, callback) {
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        success: callback,
+    })
+}

@@ -80,22 +80,6 @@ namespace Onyx_POS
             else
                 return "No";
         }
-        public static string Encrypt(this string password)
-        {
-            string encryptedstring;
-            byte[] data;
-            data = Encoding.ASCII.GetBytes(password);
-            encryptedstring = Convert.ToBase64String(data);
-            return encryptedstring;
-        }
-        public static string Decrypt(this string hash)
-        {
-            byte[] data;
-            string decryptedstring;
-            data = Convert.FromBase64String(hash);
-            decryptedstring = Encoding.ASCII.GetString(data);
-            return decryptedstring;
-        }
         public static string ConvertToSlug(this string text)
         {
             string lowercaseText = text.ToLower();

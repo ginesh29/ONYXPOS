@@ -2,10 +2,16 @@ using ElectronNET.API;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Onyx_POS.Data;
 using Onyx_POS.Middleware;
+using Onyx_POS.Services;
 using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<AppDbContext>();
+builder.Services.AddSingleton<AuthService>();
+builder.Services.AddSingleton<CommonService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
