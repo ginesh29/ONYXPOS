@@ -1,7 +1,9 @@
-﻿@model LoginModel
+﻿@using ElectronNET.API
+@model LoginModel
 @{
     Layout = null;
     ViewData["Title"] = "Login";
+    var AppType = HybridSupport.IsElectronActive ? "Electron" : "Web";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -25,6 +27,7 @@
 <!--end::Head-->
 <!--begin::Body-->
 <body id="kt_body" class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center bgi-no-repeat">
+    <input type="hidden" id="AppType" value="@AppType" />
     <!--begin::Root-->
     <div class="d-flex flex-column flex-root" id="kt_app_root">
         <div class="d-flex flex-column-fluid flex-lg-row-auto justify-content-center justify-content-lg-end p-12 p-lg-20">
@@ -68,7 +71,7 @@
 
                         <!--begin::Submit button-->
                         <div class="d-flex justify-content-between">
-                            <button type="button" id="kt_sign_in_submit" class="btn btn-primary" style="width:85%" onclick="loginUser(this)">
+                            <button type="button" id="btn-login" class="btn btn-primary" style="width:85%" onclick="loginUser(this)">
                                 <!--begin::Indicator label-->
                                 <span class="indicator-label">Log In</span>
                                 <!--end::Indicator label-->
@@ -95,20 +98,17 @@
     </div>
     <!--end::Root-->
     <!--begin::Javascript-->
-    <script>var hostUrl = "assets/";</script>
     <!--begin::Global Javascript Bundle(mandatory for all pages)-->
     <script src="~/lib/jquery/jquery.min.js"></script>
     <script src="~/assets/js/scripts.bundle.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/page/login.js" asp-append-version="true"></script>
-   @*  
-    
+    <script src="~/assets/plugins/global/plugins.bundle.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/virtual-keyboard/js/jquery.keyboard.min.js"></script>
-    <script src="~/lib/virtual-keyboard/js/jquery.keyboard.extension-all.min.js"></script> *@
+    <script src="~/lib/virtual-keyboard/js/jquery.keyboard.extension-all.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/page/login.js" asp-append-version="true"></script>
     <!--end::Global Javascript Bundle-->
-    
     <!--end::Javascript-->
 </body>
 <!--end::Body-->

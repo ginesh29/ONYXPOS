@@ -1,4 +1,5 @@
-﻿function loadingButton(btn) {
+﻿var isWeb = document.getElementById('AppType').value == "Web";
+function loadingButton(btn) {
     var $this = $(btn);
     //loadingPage();
     $this.attr("data-kt-indicator", "on")
@@ -13,16 +14,22 @@ function unloadingButton(btn) {
     }, 1000);
 }
 function showSuccessToastr(msg) {
-    toastr.clear()
-    toastr.success(msg);
+    if (isWeb) {
+        toastr.clear()
+        toastr.success(msg);
+    }
 }
 function showWarningToastr(msg) {
-    toastr.clear()
-    toastr.warning(msg);
+    if (isWeb) {
+        toastr.clear()
+        toastr.warning(msg);
+    }
 }
 function showErrorToastr(msg) {
-    toastr.clear()
-    toastr.error(msg);
+    if (isWeb) {
+        toastr.clear()
+        toastr.error(msg);
+    }
 }
 function getAjax(url, callback) {
     $.get(url, callback);
