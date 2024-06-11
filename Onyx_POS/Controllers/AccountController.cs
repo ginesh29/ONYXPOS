@@ -32,20 +32,11 @@ namespace Onyx_POS.Controllers
                 result.Message = CommonMessage.INVALIDUSER;
             return Json(result);
         }
-        //public async Task<IActionResult> LogOut()
-        //{
-        //    _logService.SetActivityLogHead(new ActivityLogModel
-        //    {
-        //        Browser = _loggedInUser.Browser,
-        //        CoAbbr = _loggedInUser.CoAbbr,
-        //        UserCd = _loggedInUser.UserCd,
-        //        ActivityId = _loggedInUser.ActivityId,
-        //        CoCd = _loggedInUser.CompanyCd,
-        //        ActivityType = "U",
-        //    });
-        //    await _authService.SignOutAsync();
-        //    return RedirectToAction("Login", "Account");
-        //}
+        public async Task<IActionResult> LogOut()
+        {
+            await _authService.SignOutAsync();
+            return RedirectToAction("Login", "Account");
+        }
         //public IActionResult ChangePassword()
         //{
         //    return PartialView("_ChangePassword");

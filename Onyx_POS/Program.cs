@@ -1,4 +1,5 @@
 using ElectronNET.API;
+using ElectronNET.API.Entities;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -72,6 +73,12 @@ app.Run();
 
 static async void CreateWindow()
 {
-    var window = await Electron.WindowManager.CreateWindowAsync();
+    var options = new BrowserWindowOptions
+    {
+        //Frame = false,
+        //Transparent = true
+    };
+    //Electron.Menu.SetApplicationMenu([]);
+    var window = await Electron.WindowManager.CreateWindowAsync(options);
     window.OnClosed += Electron.App.Quit;
 }

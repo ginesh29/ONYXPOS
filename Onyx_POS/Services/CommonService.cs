@@ -35,7 +35,7 @@ namespace Onyx_POS.Services
                 if (!singleFile)
                 {
                     string type = item.Type == "P" ? "Sp" : "Trigger";
-                    filePath = $@"D:\Projects\HRMS\Onyx\DB\scripts\{type}-Backup-{item.Modify_Date:ddMMyyyy}.sql";
+                    filePath = $@"D:\Projects\POS\Onyx_POS\DB\scripts\{type}-Backup-{item.Modify_Date:ddMMyyyy}.sql";
                     File.WriteAllText(filePath, result);
                 }
             }
