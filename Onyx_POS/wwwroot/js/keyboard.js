@@ -2,7 +2,8 @@
     elements: {
         main: null,
         keysContainer: null,
-        keys: []
+        keys: [],
+        closeButton: null
     },
 
     eventHandlers: {
@@ -19,16 +20,24 @@
         // Create main elements
         this.elements.main = document.createElement("div");
         this.elements.keysContainer = document.createElement("div");
-
+        this.elements.closeButton = document.createElement("button");
         // Setup main elements
         this.elements.main.classList.add("keyboard", "keyboard--hidden");
         this.elements.keysContainer.classList.add("keyboard__keys");
+
+        this.elements.closeButton.classList.add("keyboard__close");
+        this.elements.closeButton.innerHTML = `<img src="/assets/media/kb-icon/close.png" alt="Close" style="height: 25px;">`;
+        this.elements.closeButton.addEventListener("click", () => {
+            this.close();
+        });
+
         this.elements.keysContainer.appendChild(this._createKeys());
 
         this.elements.keys = this.elements.keysContainer.querySelectorAll(".keyboard__key");
 
         // Add to DOM
         this.elements.main.appendChild(this.elements.keysContainer);
+        this.elements.main.appendChild(this.elements.closeButton);
         document.body.appendChild(this.elements.main);
 
         // Automatically use keyboard for elements with .use-keyboard-input
@@ -38,6 +47,12 @@
                     element.value = currentValue;
                 });
             });
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!this.elements.main.contains(event.target) && !event.target.classList.contains("keyboard-input")) {
+                this.close();
+            }
         });
     },
 
@@ -53,7 +68,7 @@
 
         // Creates HTML for an icon
         const createIconHTML = (icon_name) => {
-            var iconHtml = icon_name == 'backspace' || icon_name == 'keyboard_capslock' || icon_name == 'keyboard_return' || icon_name == 'check_circle' ? `<img src="/assets/media/kb-icon/${icon_name}.png" style="height: 25px" />` : `<span>${icon_name}</span>`;
+            var iconHtml = icon_name == 'backspace' || icon_name == 'keyboard_capslock' || icon_name == 'keyboard_return' ? `<img src="/assets/media/kb-icon/${icon_name}.png" style="height: 25px" />` : `<span class="fs-4">${icon_name}</span>`;
             return iconHtml;
         };
 
@@ -101,7 +116,7 @@
 
                 case "space":
                     keyElement.classList.add("keyboard__key--extra-wide");
-                    keyElement.innerHTML = createIconHTML("space");
+                    keyElement.innerHTML = createIconHTML("Space");
 
                     keyElement.addEventListener("click", () => {
                         this.properties.value += " ";
@@ -111,8 +126,10 @@
                     break;
 
                 case "done":
-                    keyElement.innerHTML = createIconHTML("check_circle");
-
+                    keyElement.classList.add("bg-primary");
+                    keyElement.classList.add("text-white");
+                    keyElement.classList.add("keyboard__key--wide");
+                    keyElement.innerHTML = createIconHTML("Done");
                     keyElement.addEventListener("click", () => {
                         this.close();
                         this._triggerEvent("onclose");
