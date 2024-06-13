@@ -12,15 +12,15 @@
     <title>Onyx POS - @ViewData["Title"]</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="shortcut icon" href="~/favicon.ico" />
     <!--begin::Fonts(mandatory for all pages)-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <!--end::Fonts-->
     <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
     <link href="~/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
     <link href="~/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="~/lib/virtual-keyboard/css/keyboard.min.css" rel="stylesheet" />
-    <link href="~/lib/virtual-keyboard/css/keyboard-basic.min.css" rel="stylesheet" />
+    <link href="~/css/keyboard.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/login.css" rel="stylesheet" asp-append-version="true" />
     <!--end::Global Stylesheets Bundle-->
 </head>
@@ -36,7 +36,7 @@
                 <!--begin::Wrapper-->
                 <div class="d-flex flex-center flex-column flex-column-fluid px-lg-10 pb-15 pb-lg-20">
                     <!--begin::Form-->
-                    <form class="form w-100" id="login_frm">
+                    <form class="form w-100" method="post" id="login_frm">
                         <input type="hidden" id="returnUrl" value="@Context.Request.Query["returnUrl"]" />
                         <!--begin::Heading-->
                         <div class="mb-11 text-center">
@@ -50,14 +50,14 @@
                         </div>
                         <!--begin::Heading-->
                         <div class="mb-5">
-                            <div class="input-group">
+                            <div class="input-group fv-row">
                                 <span class="input-group-text border-right-0 bg-transparent"><i class="fa-solid fa-user fs-4"></i></span>
                                 <input type="text" placeholder="User Id" asp-for="UserId" autocomplete="off" class="form-control form-control-lg keyboard-input bg-transparent" />
                             </div>
                             <span asp-validation-for="UserId" class="text-danger"></span>
                         </div>
                         <div class="mb-10">
-                            <div class="input-group">
+                            <div class="input-group fv-row">
                                 <span class="input-group-text border-right-0 bg-transparent" id="basic-addon1"><i class="fa-solid fa-lock fs-4"></i></span>
                                 <input type="password" placeholder="Password" asp-for="Password" autocomplete="off" class="form-control form-control-lg keyboard-input bg-transparent" />
                                 <span class="input-group-text btn-eye bg-transparent">
@@ -71,7 +71,7 @@
 
                         <!--begin::Submit button-->
                         <div class="d-flex justify-content-between">
-                            <button type="button" id="btn-login" class="btn btn-primary" style="width:85%" onclick="loginUser(this)">
+                            <button type="submit" id="btn-login" class="btn btn-primary" style="width:85%">
                                 <!--begin::Indicator label-->
                                 <span class="indicator-label">Log In</span>
                                 <!--end::Indicator label-->
@@ -99,13 +99,12 @@
     <!--end::Root-->
     <!--begin::Javascript-->
     <!--begin::Global Javascript Bundle(mandatory for all pages)-->
-    <script src="~/lib/jquery/jquery.min.js"></script>
+    @* <script src="~/lib/jquery/jquery.min.js"></script> *@
     <script src="~/assets/js/scripts.bundle.js"></script>
     <script src="~/assets/plugins/global/plugins.bundle.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/virtual-keyboard/js/jquery.keyboard.min.js"></script>
-    <script src="~/lib/virtual-keyboard/js/jquery.keyboard.extension-all.min.js"></script>
+    <script src="~/js/keyboard.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/page/login.js" asp-append-version="true"></script>
     <!--end::Global Javascript Bundle-->

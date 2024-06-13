@@ -1,41 +1,65 @@
-﻿function showHidePasswordAsterisk(id, curEl) {
+﻿function validateForm() {
+    var userId = document.getElementById('UserId').value;
+    var password = document.getElementById('Password').value;
+
+    var userIdError = document.querySelector('[data-valmsg-for="UserId"]');
+    var passwordError = document.querySelector('[data-valmsg-for="Password"]');
+    userIdError.textContent = "";
+    passwordError.textContent = "";
+    var isValid = true;
+    if (!userId) {
+        userIdError.textContent = "Please enter User Id";
+        isValid = false;
+    }
+    if (!password) {
+        passwordError.textContent = "Please enter Password";
+        isValid = false;
+    }
+    return isValid;
+}
+
+function showHidePasswordAsterisk(id, curEl) {
     var x = document.getElementById(id);
+    var eyeIcon = curEl.parentNode.querySelector(".eye-icon");
     if (x.type === "password") {
         x.type = "text";
-        $(curEl).parent().find(".eye-icon").removeClass("fa-eye").addClass("fa-eye-slash");
-    }
-    else {
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+    } else {
         x.type = "password";
-        $(curEl).parent().find(".eye-icon").removeClass("fa-eye-slash").addClass("fa-eye");
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
     }
 }
-function loginUser(btn) {
-    debugger
-    var frm = $("#login_frm");
-    //if (frm.valid()) {
-    loadingButton(btn);
-    postAjax(`/account/login`, frm.serialize(), function (response) {
-        if (response.success) {
-            var returnUrl = $("#returnUrl").val();
-            returnUrl = returnUrl ? returnUrl : "/";
-            showSuccessToastr(response.message)
-            setTimeout(function () {
-                unloadingButton(btn);
-                window.location.href = returnUrl;
-            }, 1000)
-        }
-        else
-            showErrorToastr(response.message);
-        unloadingButton(btn);
-    });
-    //}
-}
+
 document.getElementById('Password').addEventListener('keypress', function (e) {
-    if (e.keyCode === 13) {
+    if (e.key === 'Enter') {
         document.getElementById('btn-login').click();
     }
 });
 
-//$('.keyboard-input').keyboard({
-//    layout: 'qwerty',
-//});
+document.getElementById('btn-login').addEventListener('click', function (e) {
+    var cur = this;
+    e.preventDefault();
+    if (validateForm()) {
+        loadingButton(cur);
+        var form = document.getElementById("login_frm");
+        var frmData = new FormData(form);
+        postAjax(`/account/login`, frmData, function (response) {
+            if (response.success) {
+                var returnUrl = document.getElementById("returnUrl").value;
+                returnUrl = returnUrl ? returnUrl : "/";
+                setTimeout(function () {
+                    showToastr(response.message);
+                    setTimeout(function () {
+                        unloadingButton(this);
+                        window.location.href = returnUrl;
+                    }, 500)
+                }, 500)
+            }
+            else
+                showToastr(response.message, "error");
+            unloadingButton(cur);
+        });
+    }
+});

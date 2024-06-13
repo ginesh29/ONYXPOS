@@ -1,41 +1,41 @@
-﻿var isWeb = document.getElementById('AppType').value == "Web";
+﻿/*var isWeb = document.getElementById('AppType').value == "Web";*/
 function loadingButton(btn) {
-    var $this = $(btn);
-    //loadingPage();
-    $this.attr("data-kt-indicator", "on")
-    $this.prop("disabled", true);
+    btn.setAttribute("data-kt-indicator", "on");
+    btn.disabled = true;
 }
 function unloadingButton(btn) {
-    var $this = $(btn);
     setTimeout(function () {
-        $this.prop("disabled", false);
-        $this.removeAttr("data-kt-indicator")
-        //unloadingPage();
+        btn.removeAttribute("data-kt-indicator", "on");
+        btn.disabled = false;
     }, 1000);
 }
-function showSuccessToastr(msg) {
-    if (isWeb) {
-        toastr.clear()
-        toastr.success(msg);
-    }
-}
-function showWarningToastr(msg) {
-    if (isWeb) {
-        toastr.clear()
-        toastr.warning(msg);
-    }
-}
-function showErrorToastr(msg) {
-    if (isWeb) {
-        toastr.clear()
-        toastr.error(msg);
-    }
+function showToastr(msg, type) {
+    type = type ? type : "success";
+    var html = `<div id="toastr-container" class="toastr-top-right">
+                    <div class="toastr toastr-${type}" aria-live="polite" style="">
+                        <div class="toastr-message">${msg}</div>
+                    </div>
+                </div>`
+    document.body.insertAdjacentHTML('afterbegin', html);
+    setTimeout(function () {
+        var toastrContainer = document.getElementById('toastr-container');
+        toastrContainer.style.opacity = 0;
+    }, 3000);
 }
 function getAjax(url, callback) {
     $.get(url, callback);
 }
-function postAjax(url, formdata, callback) {
-    $.post(url, formdata, callback);
+
+function postAjax(url, frmData, callback) {
+    fetch(url, {
+        method: 'POST',
+        body: frmData
+    }).then(response => {
+        return response.json();        
+    }).then(data => {
+        callback(data);
+        return data;
+    });
 }
 function filePostAjax(url, formData, callback) {
     $.ajax({
