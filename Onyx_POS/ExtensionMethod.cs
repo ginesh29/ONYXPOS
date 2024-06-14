@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.Controllers;
-using Microsoft.AspNetCore.Mvc;
-using System.Text;
-using System.Text.Json;
+﻿using System.Text.Json;
 
 
 namespace Onyx_POS
@@ -260,41 +257,6 @@ namespace Onyx_POS
                 result += $"{days} day{(days > 1 ? "s" : "")}";
             }
             return result;
-        }
-        public static Dictionary<string, decimal> GetDynamicListTotal(this List<dynamic> list)
-        {
-            var totals = new Dictionary<string, decimal>();
-            foreach (var row in list)
-            {
-                var rowDict = (IDictionary<string, object>)row;
-                foreach (var key in rowDict.Keys)
-                {
-                    if (decimal.TryParse(rowDict[key]?.ToString(), out decimal value))
-                    {
-                        if (totals.ContainsKey(key))
-                        {
-                            totals[key] += value;
-                        }
-                        else
-                        {
-                            totals[key] = value;
-                        }
-                    }
-                }
-            }
-            return totals;
-        }
-        public static bool IsImage(this string filename)
-        {
-            string[] imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".ico"];
-            var extension = Path.GetExtension(filename);
-            return Array.Exists(imageExtensions, ext => ext == extension);
-        }
-        public static bool IsVideo(this string filename)
-        {
-            var videoExtensions = new[] { ".mp4", ".avi", ".mov", ".wmv", ".flv", ".mkv", ".webm" };
-            var extension = Path.GetExtension(filename.ToLower());
-            return Array.Exists(videoExtensions, ext => ext == extension);
         }
     }
 }

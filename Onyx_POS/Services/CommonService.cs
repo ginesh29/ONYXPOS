@@ -1,13 +1,22 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Onyx_POS.Data;
 using Onyx_POS.Models;
 using System.Data;
 using System.Data.SqlClient;
 
 namespace Onyx_POS.Services
 {
-    public class CommonService()
+    public class CommonService(AppDbContext context)
     {
+        private readonly AppDbContext _context = context;
+        public PosCtrlModel GetCuurentPosCtrl()
+        {
+            var query = "select * from PosCtrl";
+            using var connection = _context.CreateConnection();
+            var data = connection.QueryFirstOrDefault<PosCtrlModel>(query);
+            return data;
+        }
         public void GenerateModifiedSp(bool singleFile = true)
         {
             var modifiedSpQuery = @$"SELECT Name, Modify_Date, trim(type)Type FROM sys.objects

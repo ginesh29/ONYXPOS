@@ -7,7 +7,6 @@
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-    <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>
   <ItemGroup>
     <Content Update="electron.manifest.json">

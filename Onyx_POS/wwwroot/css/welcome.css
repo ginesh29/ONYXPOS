@@ -1,0 +1,17 @@
+.welcome-card {
+    background: #0A60E0 !important;
+    width: 250px;
+    height: 150px;
+    text-align:left;
+    padding:20px !important;
+    row-gap:10px;
+    border-radius:15px;
+}
+.symbol .symbol-label {
+    width: 35px;
+    height: 35px;
+}
+.symbol.symbol-light-success .symbol-label {
+    background-color: #C9F7F5;
+    color: #1BC5BD;
+}
