@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Welcome Page";
     Layout = null;
+    var loggedInUser = _authService.GetLoggedInUser();
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -16,11 +17,11 @@
     <nav class="navbar navbar-white navbar-expand-lg navbar-white bg-white shadow">
         <div class="container-fluid">
             <div class="d-flex mr-auto">
-                <a class="navbar-brand p-0" href="#">
+                <a class="navbar-brand p-0" href="/">
                     <img src="~/assets/media/logo/logo.png" height="50" />
                 </a>
                 <div class="d-flex align-items-center fs-3">
-                    <div class="px-3">Date & Time: <span class="text-primary">@DateTime.Now</span></div>
+                    <div class="px-3">Date & Time: <span class="text-primary" id="live-clock"></span></div>
                     <div class="px-3">Location: <span class="text-primary">@Model.P_LocName</span></div>
                     <div class="px-3">Terminal #: <span class="text-primary">@Model.P_PosId</span></div>
                 </div>
@@ -28,8 +29,8 @@
             <div class="d-flex">                
                 <div class="topbar-item">
                     <div class="btn btn-icon btn-icon-mobile btn-clean d-flex align-items-center btn-lg px-2 w-auto" id="kt_quick_user_toggle">
-                        <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hi,</span>
-                        <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">Sean</span>
+                        <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1 me-2">Welcome,</span>
+                        <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">@loggedInUser.U_Name</span>
                         <span class="symbol symbol-lg-35 symbol-25 symbol-light-success ps-3">
                             <span class="symbol-label font-size-h5 font-weight-bold">S</span>
                         </span>

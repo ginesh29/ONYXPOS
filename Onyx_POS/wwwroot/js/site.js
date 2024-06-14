@@ -1,4 +1,13 @@
 ﻿/*var isWeb = document.getElementById('AppType').value == "Web";*/
+var liveClock = document.getElementById("live-clock");
+if (liveClock)
+    window.onload = displayClock();
+function displayClock() {
+    var date = new Date().toLocaleDateString();
+    var time = new Date().toLocaleTimeString();
+    liveClock.textContent = `${date} ${time}`;
+    setTimeout(displayClock, 1000);
+}
 function loadingButton(btn) {
     btn.setAttribute("data-kt-indicator", "on");
     btn.disabled = true;
@@ -31,7 +40,7 @@ function postAjax(url, frmData, callback) {
         method: 'POST',
         body: frmData
     }).then(response => {
-        return response.json();        
+        return response.json();
     }).then(data => {
         callback(data);
         return data;
