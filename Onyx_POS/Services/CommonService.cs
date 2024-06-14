@@ -1,8 +1,6 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Onyx_POS.Data;
 using Onyx_POS.Models;
-using System.Data;
 using System.Data.SqlClient;
 
 namespace Onyx_POS.Services
@@ -20,7 +18,7 @@ namespace Onyx_POS.Services
         public void GenerateModifiedSp(bool singleFile = true)
         {
             var modifiedSpQuery = @$"SELECT Name, Modify_Date, trim(type)Type FROM sys.objects
-	                                WHERE (Type = 'P' or Type = 'TR') and Modify_Date > '2024-06-01'
+	                                WHERE (Type = 'P' or Type = 'TR') and Modify_Date > '2024-06-15'
 	                                ORDER BY Modify_Date DESC";
             var connectionString = "Server=GINESH-PC\\SQLEXPRESS;Initial catalog=POS;uid=absluser; pwd=0c4gn2zn;TrustServerCertificate=True;Connection Timeout=120;";
             var connection = new SqlConnection(connectionString);
