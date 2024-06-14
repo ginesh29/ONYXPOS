@@ -3,31 +3,17 @@
 @{
     Layout = null;
     ViewData["Title"] = "Login";
-    var AppType = HybridSupport.IsElectronActive ? "Electron" : "Web";
 }
 <!DOCTYPE html>
 <html lang="en">
 <!--begin::Head-->
 <head>
-    <title>Onyx POS - @ViewData["Title"]</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="~/favicon.ico" />
-    <!--begin::Fonts(mandatory for all pages)-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-    <!--end::Fonts-->
-    <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
-    <link href="~/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="~/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
-    <link href="~/css/keyboard.css" rel="stylesheet" />
-    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
-    <link href="~/css/login.css" rel="stylesheet" asp-append-version="true" />
-    <!--end::Global Stylesheets Bundle-->
+    <partial name="_HeadImport" />
+    <link href="~/css/login.css" rel="stylesheet" asp-append-version="true" />    
 </head>
 <!--end::Head-->
 <!--begin::Body-->
 <body id="kt_body" class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center bgi-no-repeat">
-    <input type="hidden" id="AppType" value="@AppType" />
     <!--begin::Root-->
     <div class="d-flex flex-column flex-root" id="kt_app_root">
         <div class="d-flex flex-column-fluid flex-lg-row-auto justify-content-center justify-content-lg-end p-12 p-lg-20">
@@ -98,16 +84,8 @@
     </div>
     <!--end::Root-->
     <!--begin::Javascript-->
-    <!--begin::Global Javascript Bundle(mandatory for all pages)-->
-    @* <script src="~/lib/jquery/jquery.min.js"></script> *@
-    <script src="~/assets/js/scripts.bundle.js"></script>
-    <script src="~/assets/plugins/global/plugins.bundle.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/js/keyboard.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <partial name="_ScriptImport" />
     <script src="~/js/page/login.js" asp-append-version="true"></script>
-    <!--end::Global Javascript Bundle-->
     <!--end::Javascript-->
 </body>
 <!--end::Body-->

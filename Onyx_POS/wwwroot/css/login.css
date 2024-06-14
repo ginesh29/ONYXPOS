@@ -16,20 +16,13 @@
     border: 1px solid #fff;
 }
 
-    .login-card input {
-        caret-color: #fff;
-        color: rgba(255, 255, 255, 1)
+    .login-card input,
+    .login-card input:-webkit-autofill,
+    .login-card input:-webkit-autofill:hover,
+    .login-card input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 50px rgba(255, 255, 255, 0) inset !important;
+        background-color: transparent !important;
+        background-clip: text;
+        -webkit-text-fill-color: #FFF !important;
+        color: #FFF !important;
     }
-        .login-card input:focus {
-            color:#FFF;
-        }
-        .login-card input,
-        .login-card input:-webkit-autofill,
-        .login-card input:-webkit-autofill:hover,
-        .login-card input:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 50px rgba(255, 255, 255, 0) inset !important;
-            background-color: transparent !important;
-            background-clip: text;
-            -webkit-text-fill-color: #FFF !important;
-            color: #FFF !important;
-        }

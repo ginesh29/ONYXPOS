@@ -1,8 +1,52 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Welcome Page";
+    Layout = null;
+    string[] menuItems = ["Sales", "Setup", "Spot Sales", "Report"];
+    string[] menuItems2 = ["Shift End Progress", "Day End Process", "Exit"];
 }
+<!DOCTYPE html>
+<html lang="en">
+<!--begin::Head-->
+<head>
+    <partial name="_HeadImport" />
+</head>
+<!--end::Head-->
+<!--begin::Body-->
+<body>
+    <div class="main-container container">
+        <div class="container">
+            <div class="row">
+                @foreach (var item in menuItems)
+                {
+                    <div class="col">
+                        <a class="btn btn-primary p-7 align-items-center mb-5">
+                           
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+                            <span class="d-block fw-semibold text-start">
+                                <span class="text-gray-900 fw-bold d-block fs-3">@item</span>
+                            </span>
+                        </a>
+                    </div>
+                }
+            </div>
+            <div class="row">
+                @foreach (var item in menuItems2)
+                {
+                    <div class="col">
+                        <a class="btn btn-primary p-7align-items-center mb-5" >
+                            <i class="ki-duotone ki-setting-2 fs-4x me-4"><span class="path1"></span><span class="path2"></span></i>
+
+                            <span class="d-block fw-semibold text-start">
+                                <span class="text-gray-900 fw-bold d-block fs-3">@item</span>
+                            </span>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!--begin::Javascript-->
+    <partial name="_ScriptImport" />
+    <!--end::Javascript-->
+</body>
+</html>
