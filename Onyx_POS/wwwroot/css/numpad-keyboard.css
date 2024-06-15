@@ -1,24 +1,32 @@
-.keyboard {
+.keyboard,
+.numpad {
     position: fixed;
     left: 50%;
     transform: translate(-50%);
     bottom: 0;
     width: 50%;
-    padding: 50px 0 10px;
+    padding: 30px 0 10px;
     background: #e0ebff;
     transition: bottom 0.4s;
-    border-radius:10px;
+    border-radius: 10px;
 }
 
-.keyboard--hidden {
+.numpad {
+    width: 15% !important;
+}
+
+.keyboard--hidden,
+.numpad--hidden {
     bottom: -100%;
 }
 
-.keyboard__keys {
+.keyboard__keys,
+.numpad__keys {
     text-align: center;
 }
 
-.keyboard__key {
+.keyboard__key,
+.numpad__key {
     height: 50px;
     width: 8%;
     margin: 5px;
@@ -38,9 +46,13 @@
     position: relative;
 }
 
-    .keyboard__key:active {
-        background: rgba(255, 255, 255, 0.12);
-    }
+.numpad__key {
+    width: 25% !important;
+}
+
+.keyboard__key:active {
+    background: rgba(255, 255, 255, 0.12);
+}
 
 .keyboard__key--wide {
     width: 12%;
@@ -69,10 +81,21 @@
 .keyboard__key--dark {
     background: rgba(0, 0, 0, 0.25);
 }
-.keyboard__close {
+
+.keyboard__close,
+.numpad__close {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 10;
+}
+.toggle__keypad {
+    position: absolute;
+    top: 5px;
+    left: 5px;
     background-color: transparent;
     border: none;
     cursor: pointer;

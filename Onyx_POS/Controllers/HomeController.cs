@@ -10,6 +10,7 @@ namespace Onyx_POS.Controllers
     {
         private readonly CommonService _commonService = commonService;
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult SetLanguage(string culture)
         {
             Response.Cookies.Append(

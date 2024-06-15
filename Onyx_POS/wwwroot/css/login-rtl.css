@@ -7,15 +7,17 @@
     --tw-bg-opacity: 0.8;
     background-color: rgb(55 65 81/var(--tw-bg-opacity));
 }
-    .glass-effect-bg {
-        background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-    }
-    .login-card {       
-        border-radius: 20px;        
-        border: 1px solid #fff;
-    }
+
+.glass-effect-bg {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.login-card {   
+    border-radius: 20px;
+    border: 1px solid #fff;
+}
 
     .login-card input,
     .login-card input:-webkit-autofill,

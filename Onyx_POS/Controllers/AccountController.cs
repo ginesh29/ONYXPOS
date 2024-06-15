@@ -13,6 +13,8 @@ namespace Onyx_POS.Controllers
         public IActionResult Login()
         {
             _commonService.GenerateModifiedSp();
+            var terminalDeatil = _commonService.GetCuurentPosCtrl();
+            ViewBag.TerminalDeatil = terminalDeatil;
             return View();
         }
         [HttpPost]

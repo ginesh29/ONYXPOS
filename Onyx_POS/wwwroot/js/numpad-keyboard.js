@@ -13,20 +13,36 @@
 
     properties: {
         value: "",
-        capsLock: false
+        capsLock: false,
+        defaultPad: "num",
+        currentPad: "keyboard"
     },
 
     init() {
         // Create main elements
         this.elements.main = document.createElement("div");
         this.elements.keysContainer = document.createElement("div");
+        this.elements.toggleButton = document.createElement("button");
         this.elements.closeButton = document.createElement("button");
         // Setup main elements
         this.elements.main.classList.add("keyboard", "keyboard--hidden");
         this.elements.keysContainer.classList.add("keyboard__keys");
 
+        this.elements.toggleButton.classList.add("toggle__keypad");
+        var icon = Keyboard.properties.currentPad == "num" ? "number" : "keyboard";
+        this.elements.toggleButton.innerHTML = `<img src="/assets/media/kb-icon/${icon}.png" alt="Close" style="height: 30px;">`;
+        this.elements.toggleButton.addEventListener("click", () => {
+            Keyboard.close();
+
+            Keyboard.properties.currentPad = Keyboard.properties.currentPad == "num" ? "keyboard" : "num";
+            Keyboard.init();
+            setTimeout(function () {
+                Keyboard.open();
+            })
+        });
+
         this.elements.closeButton.classList.add("keyboard__close");
-        this.elements.closeButton.innerHTML = `<img src="/assets/media/kb-icon/close.svg" alt="Close" style="height: 8px;">`;
+        this.elements.closeButton.innerHTML = `<img src="/assets/media/kb-icon/close.svg" alt="Close" style="height: 10px;">`;
         this.elements.closeButton.addEventListener("click", () => {
             this.close();
         });
@@ -37,6 +53,7 @@
 
         // Add to DOM
         this.elements.main.appendChild(this.elements.keysContainer);
+        this.elements.main.appendChild(this.elements.toggleButton);
         this.elements.main.appendChild(this.elements.closeButton);
         document.body.appendChild(this.elements.main);
 
@@ -58,14 +75,20 @@
 
     _createKeys() {
         const fragment = document.createDocumentFragment();
-        const keyLayout = [
-            "1", "2", "3", "4", "5", "6", "7", "8", "9", "0",
-            "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
-            "a", "s", "d", "f", "g", "h", "j", "k", "l",
-            "caps", "z", "x", "c", "v", "b", "n", "m", "backspace",
-            "space", "done"
-        ];
 
+        const keyLayout = Keyboard.properties.currentPad == "num" ?
+            [
+                "1", "2", "3",
+                "4", "5", "6",
+                "7", "8", "9",
+                "0", "backspace", "done"
+            ] :
+            [
+                "q", "w", "e", "r", "t", "y", "u", "i", "o", "p",
+                "a", "s", "d", "f", "g", "h", "j", "k", "l",
+                "caps", "z", "x", "c", "v", "b", "n", "m", "backspace",
+                "space", "done"
+            ];
         // Creates HTML for an icon
         const createIconHTML = (icon_name) => {
             var iconHtml = icon_name == 'backspace' || icon_name == 'keyboard_capslock' || icon_name == 'keyboard_return' ? `<img src="/assets/media/kb-icon/${icon_name}.svg" style="height: 25px" />` : `<span class="fs-4">${icon_name}</span>`;
@@ -74,7 +97,10 @@
 
         keyLayout.forEach(key => {
             const keyElement = document.createElement("button");
-            const insertLineBreak = ["0", "p", "l", "backspace"].indexOf(key) !== -1;
+
+            const insertLineBreak = Keyboard.properties.currentPad == "num" ?
+                ["3", "6", "9"].indexOf(key) !== -1 :
+                ["0", "p", "l", "backspace"].indexOf(key) !== -1;
 
             // Add attributes/classes
             keyElement.setAttribute("type", "button");
