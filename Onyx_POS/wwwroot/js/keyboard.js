@@ -26,7 +26,7 @@
         this.elements.keysContainer.classList.add("keyboard__keys");
 
         this.elements.closeButton.classList.add("keyboard__close");
-        this.elements.closeButton.innerHTML = `<img src="/assets/media/kb-icon/close.png" alt="Close" style="height: 25px;">`;
+        this.elements.closeButton.innerHTML = `<img src="/assets/media/kb-icon/close.svg" alt="Close" style="height: 8px;">`;
         this.elements.closeButton.addEventListener("click", () => {
             this.close();
         });
@@ -68,7 +68,7 @@
 
         // Creates HTML for an icon
         const createIconHTML = (icon_name) => {
-            var iconHtml = icon_name == 'backspace' || icon_name == 'keyboard_capslock' || icon_name == 'keyboard_return' ? `<img src="/assets/media/kb-icon/${icon_name}.png" style="height: 25px" />` : `<span class="fs-4">${icon_name}</span>`;
+            var iconHtml = icon_name == 'backspace' || icon_name == 'keyboard_capslock' || icon_name == 'keyboard_return' ? `<img src="/assets/media/kb-icon/${icon_name}.svg" style="height: 25px" />` : `<span class="fs-4">${icon_name}</span>`;
             return iconHtml;
         };
 

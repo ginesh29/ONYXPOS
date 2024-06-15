@@ -1,6 +1,6 @@
 ﻿@model PosCtrlModel
 @{
-    ViewData["Title"] = "Welcome Page";
+    ViewData["Title"] = @_languageService.GetTranslation("Welcome");
     Layout = null;
     var loggedInUser = _authService.GetLoggedInUser();
 }
@@ -9,7 +9,6 @@
 <!--begin::Head-->
 <head>
     <partial name="_HeadImport" />
-    <link href="~/css/welcome.css" rel="stylesheet" asp-append-version="true" />
 </head>
 <!--end::Head-->
 <!--begin::Body-->
@@ -21,18 +20,19 @@
                     <img src="~/assets/media/logo/logo.png" height="50" />
                 </a>
                 <div class="d-flex align-items-center fs-3">
-                    <div class="px-3">Date & Time: <span class="text-primary" id="live-clock"></span></div>
-                    <div class="px-3">Location: <span class="text-primary">@Model.P_LocName</span></div>
-                    <div class="px-3">Terminal #: <span class="text-primary">@Model.P_PosId</span></div>
+                    <div class="px-3 w-350px">@_languageService.GetTranslation("Date & Time"): <span class="text-primary" id="live-clock"></span></div>
+                    <div class="px-3">@_languageService.GetTranslation("Location"): <span class="text-primary">@Model.P_LocName</span></div>
+                    <div class="px-3">@_languageService.GetTranslation("Terminal #"): <span class="text-primary">@Model.P_PosId</span></div>
                 </div>
             </div>
-            <div class="d-flex">                
+            <div class="d-flex">
+                <partial name="_LanguageSelector" />
                 <div class="topbar-item">
                     <div class="btn btn-icon btn-icon-mobile btn-clean d-flex align-items-center btn-lg px-2 w-auto" id="kt_quick_user_toggle">
-                        <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1 me-2">Welcome,</span>
+                        <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1 me-2">@_languageService.GetTranslation("Welcome"),</span>
                         <span class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">@loggedInUser.U_Name</span>
                         <span class="symbol symbol-lg-35 symbol-25 symbol-light-success ps-3">
-                            <span class="symbol-label font-size-h5 font-weight-bold">S</span>
+                            <span class="symbol-label font-size-h5 font-weight-bold">@loggedInUser.U_Name.Substring(0, 1)</span>
                         </span>
                     </div>
                 </div>
@@ -48,7 +48,7 @@
                             <img src="/assets/media/welcome/sales.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Sales</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Sales")</span>
                         </div>
                     </a>
                 </div>
@@ -58,7 +58,7 @@
                             <img src="/assets/media/welcome/setup.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Setup</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Setup")</span>
                         </div>
                     </a>
                 </div>
@@ -68,7 +68,7 @@
                             <img src="/assets/media/welcome/spot-sales.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Spot Sales</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Spot Sales")</span>
                         </div>
                     </a>
                 </div>
@@ -78,7 +78,7 @@
                             <img src="/assets/media/welcome/report.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Report</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Report")</span>
                         </div>
                     </a>
                 </div>
@@ -90,7 +90,7 @@
                             <img src="/assets/media/welcome/shift-end-progress.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Shift End Progress</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Shift End Process")</span>
                         </div>
                     </a>
                 </div>
@@ -100,7 +100,7 @@
                             <img src="/assets/media/welcome/day-end-process.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Day End Process</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Day End Process")</span>
                         </div>
                     </a>
                 </div>
@@ -110,7 +110,7 @@
                             <img src="/assets/media/welcome/exit.svg">
                         </div>
                         <div class="d-block fw-semibold text-start">
-                            <span class="fw-bold d-block fs-3">Exit</span>
+                            <span class="fw-bold d-block fs-3">@_languageService.GetTranslation("Log Out")</span>
                         </div>
                     </a>
                 </div>

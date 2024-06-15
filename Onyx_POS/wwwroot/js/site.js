@@ -1,4 +1,14 @@
 ﻿/*var isWeb = document.getElementById('AppType').value == "Web";*/
+var dropdownItems = document.querySelectorAll(".language-dropdown-item");
+dropdownItems.forEach(function (item) {
+    item.addEventListener('click', function (e) {
+        e.preventDefault();
+        var lang = this.getAttribute("data-value");
+        document.getElementById("culture").value = lang;
+        document.getElementById("selectLanguage").submit();
+    });
+});
+
 var liveClock = document.getElementById("live-clock");
 if (liveClock)
     window.onload = displayClock();

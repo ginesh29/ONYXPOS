@@ -1,4 +1,9 @@
-﻿<title>Onyx POS - @ViewData["Title"]</title>
+﻿@using System.Globalization
+@{
+    var currentCulture = CultureInfo.CurrentCulture.Name;
+    var rtl = currentCulture == "ar" || currentCulture == "fa" ? "-rtl" : string.Empty;
+}
+<title>Onyx POS - @ViewData["Title"]</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="shortcut icon" href="~/favicon.ico" />
@@ -7,7 +12,7 @@
 <!--end::Fonts-->
 <!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
 <link href="~/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
-<link href="~/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
+<link href="~/assets/css/style.bundle@(rtl).css" rel="stylesheet" type="text/css" />
 <link href="~/css/keyboard.css" rel="stylesheet" asp-append-version="true" />
-<link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
+<link href="~/css/site@(rtl).css" rel="stylesheet" asp-append-version="true" />
 <!--end::Global Stylesheets Bundle-->

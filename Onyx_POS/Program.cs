@@ -10,6 +10,7 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<LanguageService>();
 builder.Services.AddSingleton<AppDbContext>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<CommonService>();
@@ -67,18 +68,25 @@ app.MapControllerRoute(
 
 if (HybridSupport.IsElectronActive)
 {
-    CreateWindow();
+    CreateElectronWindow();
+    //SetupIpcHandlers();
 }
 app.Run();
 
-static async void CreateWindow()
+static async void CreateElectronWindow()
 {
-    var options = new BrowserWindowOptions
+    var windowOptions = new BrowserWindowOptions
     {
-        //Frame = false,
-        //Transparent = true
+        Resizable = false,
+        AutoHideMenuBar = true,
+        Show = false,
+        Icon = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/assets/media/logo/small-logo.png")
     };
-    //Electron.Menu.SetApplicationMenu([]);
-    var window = await Electron.WindowManager.CreateWindowAsync(options);
-    window.OnClosed += Electron.App.Quit;
+
+    var mainWindow = await Electron.WindowManager.CreateWindowAsync(windowOptions);
+    mainWindow.OnReadyToShow += () =>
+    {
+        mainWindow.Maximize();
+        mainWindow.Show();
+    };
 }
