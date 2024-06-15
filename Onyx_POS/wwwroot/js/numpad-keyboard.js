@@ -14,27 +14,30 @@
     properties: {
         value: "",
         capsLock: false,
-        defaultPad: "num",
-        currentPad: "keyboard"
+        currentPad: "num"
     },
 
     init() {
         // Create main elements
+        var currentPad = Keyboard.properties.currentPad;
         this.elements.main = document.createElement("div");
         this.elements.keysContainer = document.createElement("div");
         this.elements.toggleButton = document.createElement("button");
         this.elements.closeButton = document.createElement("button");
-        // Setup main elements
-        this.elements.main.classList.add("keyboard", "keyboard--hidden");
+        // Setup main elements  
+        var className = currentPad == "num" ? "numpad" : "keyboard";
+        this.elements.main.classList.add(className, "keyboard--hidden");
+        if (currentPad)
+            this.elements.main.classList.add("numpad");
         this.elements.keysContainer.classList.add("keyboard__keys");
 
         this.elements.toggleButton.classList.add("toggle__keypad");
-        var icon = Keyboard.properties.currentPad == "num" ? "number" : "keyboard";
+        var icon = currentPad == "num" ? "number" : "keyboard";
         this.elements.toggleButton.innerHTML = `<img src="/assets/media/kb-icon/${icon}.png" alt="Close" style="height: 30px;">`;
         this.elements.toggleButton.addEventListener("click", () => {
             Keyboard.close();
 
-            Keyboard.properties.currentPad = Keyboard.properties.currentPad == "num" ? "keyboard" : "num";
+            Keyboard.properties.currentPad = currentPad == "num" ? "keyboard" : "num";
             Keyboard.init();
             setTimeout(function () {
                 Keyboard.open();
@@ -75,8 +78,8 @@
 
     _createKeys() {
         const fragment = document.createDocumentFragment();
-
-        const keyLayout = Keyboard.properties.currentPad == "num" ?
+        var currentPad = Keyboard.properties.currentPad;
+        const keyLayout = currentPad == "num" ?
             [
                 "1", "2", "3",
                 "4", "5", "6",
@@ -98,17 +101,19 @@
         keyLayout.forEach(key => {
             const keyElement = document.createElement("button");
 
-            const insertLineBreak = Keyboard.properties.currentPad == "num" ?
+            const insertLineBreak = currentPad == "num" ?
                 ["3", "6", "9"].indexOf(key) !== -1 :
                 ["0", "p", "l", "backspace"].indexOf(key) !== -1;
 
             // Add attributes/classes
             keyElement.setAttribute("type", "button");
             keyElement.classList.add("keyboard__key");
-
+            if (currentPad == "num")
+                keyElement.classList.add("numpad__key");
             switch (key) {
                 case "backspace":
-                    keyElement.classList.add("keyboard__key--wide");
+                    if (currentPad != "num")
+                        keyElement.classList.add("keyboard__key--wide");
                     keyElement.innerHTML = createIconHTML("backspace");
 
                     keyElement.addEventListener("click", () => {
@@ -154,7 +159,8 @@
                 case "done":
                     keyElement.classList.add("bg-primary");
                     keyElement.classList.add("text-white");
-                    keyElement.classList.add("keyboard__key--wide");
+                    if (currentPad != "num")
+                        keyElement.classList.add("keyboard__key--wide");
                     keyElement.innerHTML = createIconHTML("Done");
                     keyElement.addEventListener("click", () => {
                         this.close();

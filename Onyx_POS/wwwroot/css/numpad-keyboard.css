@@ -5,15 +5,14 @@
     transform: translate(-50%);
     bottom: 0;
     width: 50%;
-    padding: 30px 0 10px;
+    padding: 40px 0 10px;
     background: #e0ebff;
     transition: bottom 0.4s;
     border-radius: 10px;
 }
-
-.numpad {
-    width: 15% !important;
-}
+    .numpad:not(.keyboard) {
+        width: 15% !important;
+    }
 
 .keyboard--hidden,
 .numpad--hidden {
