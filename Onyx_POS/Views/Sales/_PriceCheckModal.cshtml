@@ -1,0 +1,38 @@
+﻿<div class="modal fade" tabindex="-1" id="PriceCheckModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Price Check</h3>
+                <!--begin::Close-->
+                <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </div>
+                <!--end::Close-->
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <div class="input-group mb-5">
+                        <span class="input-group-text">
+                            <img src="~/assets/media/sales/barcode.svg" />
+                        </span>
+                        <input type="text" class="form-control numpad-input" id="Barcode" name="Barcode" placeholder="Barcode" autofocus />
+                    </div>
+                    <partial name="_Numpad" />
+                    <div id="PriceCheckItems"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function onEnter() {
+        var code = document.getElementById("Barcode").value;
+        fetch(`/Sales/GetPriceCheckItems?code=${code}`)
+            .then(response => {
+                return response.text();
+            })
+            .then(data => {
+                document.getElementById('PriceCheckItems').innerHTML = data;
+            })
+    }
+</script>

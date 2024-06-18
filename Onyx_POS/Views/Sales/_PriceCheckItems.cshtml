@@ -1,0 +1,19 @@
+﻿@model IEnumerable<ItemModel>
+@foreach (var item in Model)
+{
+    <div class="p-3 mt-5 border-hover-primary rounded border">
+        <div class="d-flex">
+            <div class="ms-2 w-50">
+                <label class="text-primary">Item</label>
+                <div>@item.PluName</div>
+            </div>
+            <div class="ms-2">
+                <label class="text-primary">Price</label>
+                <div>@item.PluPrice</div>
+            </div>
+            <div class="ms-auto">
+                <button class="btn btn-primary">Add to order<img src="~/assets/media/sales/plus.svg" height="15px" class="ms-2" /> </button>
+            </div>
+        </div>
+    </div>
+}

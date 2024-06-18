@@ -75,3 +75,7 @@ function deleteAjax(url, callback) {
         success: callback,
     })
 }
+function playErrorBeep() {
+    const errorBeep = document.getElementById('error-beep');
+    errorBeep.play();
+}

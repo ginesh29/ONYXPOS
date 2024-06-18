@@ -1,0 +1,169 @@
+﻿@{
+    ViewData["Title"] = @_languageService.GetTranslation("Order");
+    Layout = null;
+    var loggedInUser = _authService.GetLoggedInUser();
+    PosCtrlModel TerminalDetail = ViewBag.TerminalDetail;
+}
+<!DOCTYPE html>
+<html lang="en">
+<!--begin::Head-->
+<head>
+    <partial name="_HeadImport" />
+</head>
+<!--end::Head-->
+<body>
+    <nav class="navbar navbar-dark bg-primary shadow">
+        <div class="container-fluid">
+            <div class="d-flex mr-auto">
+                <div class="d-flex align-items-center fs-3">
+                    <div class="px-3 text-light">
+                        @_languageService.GetTranslation("User Name"): <span class="fw-bold">@loggedInUser.U_Name</span>
+                    </div>
+                    <div class="px-3 text-light">
+                        @_languageService.GetTranslation("Bill Number"): <span class="fw-bold">@ViewBag.TransactionNo</span>
+                    </div>
+                    <div class="px-3 text-light">
+                        @_languageService.GetTranslation("Location"): <span class="fw-bold">@TerminalDetail.P_LocName</span>
+                    </div>
+                    <div class="px-3 w-350px text-light">
+                        @_languageService.GetTranslation("Date & Time"): <span class="fw-bold" id="live-clock"></span>
+                    </div>
+                    <div class="px-3 text-light">
+                        @_languageService.GetTranslation("Location"): <span class="fw-bold">@TerminalDetail.P_LocName</span>
+                    </div>
+                    <div class="px-3 text-light">
+                        @_languageService.GetTranslation("Terminal #"): <span class="fw-bold">@TerminalDetail.P_PosId</span>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex">
+                <partial name="_LanguageSelector" />
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid p-6">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="card h-60vh mb-6">
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Price</th>
+                                    <th>Qty.</th>
+                                    <th>Tax</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Dynamic rows here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card h-40vh">
+                    <div class="card-body">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="card h-60vh mb-6">
+                    <div class="card-body">
+                    </div>
+                </div>
+                <div class="card h-40vh">
+                    <div class="card-body">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="card custom-h-100vh">
+                    <div class="card-body p-5">
+                        <div class="w-50">
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" data-bs-toggle="modal" data-bs-target="#PriceCheckModal">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/price-check.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Price&nbsp;Check
+                            </button>
+
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/qty.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                QTY
+                            </button>
+
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/refund.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Refund
+                            </button>
+                            <button class="btn btn-primary fw-normal px-1 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/add-customer.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Add&nbsp;Customer
+                            </button>
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/cash-drawer.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Cashdrawer
+                            </button>
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/void.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Void
+                            </button>
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/recall.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Recall
+                            </button>
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/hold.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Hold
+                            </button>
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/cancel.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Cancel
+                            </button>
+                        </div>
+
+                        @* <div class="input-group mt-5">
+                        <button class="btn btn-icon btn-outline" style="font-size:xx-small">
+                        <div class="d-flex flex-column">
+                        <img src="~/assets/media/sales/visible.svg" class="menu-svg-icon h-15px" />
+                        <div class="mt-1">main</div>
+                        </div>
+                        </button>
+                        <button class="btn btn-icon btn btn-outline" style="font-size:xx-small">
+                        <div class="d-flex flex-column">
+                        <img src="~/assets/media/sales/invisible.svg" class="menu-svg-icon h-15px" />
+                        <div class="mt-1">Func 2</div>
+                        </div>
+                        </button>
+                        </div> *@
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <partial name="_PriceCheckModal" />
+    <!--begin::Javascript-->
+@*     <audio id="error-beep" src="~/assets/beep/beep-07.wav" preload="auto"></audio> *@
+    <partial name="_ScriptImport" />
+    <!--end::Javascript-->
+</body>
+</html>

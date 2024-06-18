@@ -13,16 +13,22 @@
 <!--end::Head-->
 <!--begin::Body-->
 <body>
-    <nav class="navbar navbar-white navbar-expand-lg navbar-white bg-white shadow">
+    <nav class="navbar navbar-white navbar-expand-lg bg-white shadow">
         <div class="container-fluid">
             <div class="d-flex mr-auto">
                 <a class="navbar-brand p-0" href="/">
                     <img src="~/assets/media/logo/logo.png" height="50" />
                 </a>
-                <div class="d-flex align-items-center fs-3">
-                    <div class="px-3 w-350px">@_languageService.GetTranslation("Date & Time"): <span class="text-primary" id="live-clock"></span></div>
-                    <div class="px-3">@_languageService.GetTranslation("Location"): <span class="text-primary">@Model.P_LocName</span></div>
-                    <div class="px-3">@_languageService.GetTranslation("Terminal #"): <span class="text-primary">@Model.P_PosId</span></div>
+                <div class="d-flex align-items-center fs-3 fw-light">
+                    <div class="px-3 w-350px">
+                        @_languageService.GetTranslation("Date & Time"): <span class="fw-bold" id="live-clock"></span>
+                    </div>
+                    <div class="px-3">
+                        @_languageService.GetTranslation("Location"): <span class="fw-bold">@Model.P_LocName</span>
+                    </div>
+                    <div class="px-3">
+                        @_languageService.GetTranslation("Terminal #"): <span class="fw-bold">@Model.P_PosId</span>
+                    </div>
                 </div>
             </div>
             <div class="d-flex">
@@ -43,7 +49,7 @@
         <div class="row justify-content-center align-self-center w-100">
             <div class="d-flex justify-content-center">
                 <div class="p-5">
-                    <a class="btn btn-primary hover-scale welcome-card">
+                    <a asp-action="Order" asp-controller="Sales" class="btn btn-primary hover-scale welcome-card">
                         <div class="btn btn-icon btn-light btn-circle mb-5">
                             <img src="/assets/media/welcome/sales.svg">
                         </div>

@@ -5,27 +5,34 @@
     ViewData["Title"] = "Login";
     var currentCulture = CultureInfo.CurrentCulture.Name;
     var rtl = currentCulture == "ar" || currentCulture == "fa" ? "-rtl" : string.Empty;
-    PosCtrlModel TerminalDeatil = ViewBag.TerminalDeatil;
+    PosCtrlModel TerminalDetail = ViewBag.TerminalDetail;
 }
 <!DOCTYPE html>
 <html lang="en">
 <!--begin::Head-->
 <head>
     <partial name="_HeadImport" />
-    <link href="~/css/login@(rtl).css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/numpad-keyboard.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/login@(rtl).css" rel="stylesheet" asp-append-version="true" />    
 </head>
 <!--end::Head-->
 <!--begin::Body-->
-<body id="kt_body" class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center bgi-no-repeat">   
+<body id="kt_body" class="app-blank bgi-size-cover bgi-attachment-fixed bgi-position-center bgi-no-repeat">
     <!--begin::Root-->
     <div class="d-flex flex-column flex-root" id="kt_app_root">
         <nav class="navbar glass-effect-bg shadow">
             <div class="container-fluid">
                 <div class="d-flex mr-auto">
                     <div class="d-flex align-items-center fs-3">
-                        <div class="px-3 w-350px text-light">@_languageService.GetTranslation("Date & Time"): <span class="" id="live-clock"></span></div>
-                        <div class="px-3 text-light">@_languageService.GetTranslation("Location"): <span class="">@TerminalDeatil.P_LocName</span></div>
-                        <div class="px-3 text-light">@_languageService.GetTranslation("Terminal #"): <span class="">@TerminalDeatil.P_PosId</span></div>
+                        <div class="px-3 w-350px text-light">
+                            @_languageService.GetTranslation("Date & Time"): <span class="fw-bold" id="live-clock"></span>
+                        </div>
+                        <div class="px-3 text-light fw-light">
+                            @_languageService.GetTranslation("Location"): <span class="fw-bold">@TerminalDetail.P_LocName</span>
+                        </div>
+                        <div class="px-3 text-light">
+                            @_languageService.GetTranslation("Terminal #"): <span class="fw-bold">@TerminalDetail.P_PosId</span>
+                        </div>
                     </div>
                 </div>
                 <div class="d-flex">
@@ -102,6 +109,7 @@
     <!--end::Root-->
     <!--begin::Javascript-->
     <partial name="_ScriptImport" />
+    <script src="~/js/numpad-keyboard.js" asp-append-version="true"></script>
     <script src="~/js/page/login.js" asp-append-version="true"></script>
     <!--end::Javascript-->
 </body>

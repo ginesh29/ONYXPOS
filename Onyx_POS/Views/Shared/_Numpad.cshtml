@@ -1,0 +1,91 @@
+﻿<div class="numpad">
+    <div class="numpad__keys">
+        <button type="button" class="numpad__key">1</button>
+        <button type="button" class="numpad__key">2</button>
+        <button type="button" class="numpad__key">3</button>
+        <br>
+        <button type="button" class="numpad__key">4</button>
+        <button type="button" class="numpad__key">5</button>
+        <button type="button" class="numpad__key">6</button>
+        <br>
+        <button type="button" class="numpad__key">7</button>
+        <button type="button" class="numpad__key">8</button>
+        <button type="button" class="numpad__key">9</button>
+        <br>
+        <button type="button" class="numpad__key">0</button>
+        <button type="button" class="numpad__key">00</button>
+        <button type="button" class="numpad__key">.</button><br />
+        <button type="button" class="numpad__key numpad__key__wide" data-key="backspace"><img src="~/assets/media/kb-icon/backspace.svg" /></button>
+        <button type="button" class="numpad__key bg-primary numpad__key__wide" onclick="onEnter()" data-key="enter">
+            <img src="~/assets/media/kb-icon/enter.png" height="30px" />
+        </button>
+    </div>
+</div>
+<style>
+    .numpad {
+        position: relative;
+        width: 50%;
+        padding: 5px;
+        padding-right: 0;
+        background: #e0ebff;
+        transition: bottom 0.4s;
+        border-radius: 10px;
+        width: 100% !important;
+    }
+
+    .numpad__key {
+        height: 50px;
+        margin: 5px;
+        border-radius: 5px;
+        border: none;
+        background: #fff;
+        color: #000;
+        font-size: 2rem;
+        outline: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        vertical-align: top;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+        position: relative;
+        width: 30% !important;
+    }
+
+    .numpad__key__wide {
+        width: 46.5% !important;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const numpadInputs = document.querySelectorAll('.numpad-input');
+        const numButtons = document.querySelectorAll('.numpad__key');
+        let activeInput = null;
+        const setActiveInput = (input) => {
+            activeInput = input;
+            activeInput.focus();
+        };
+
+        numpadInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                activeInput = input;
+            });
+        });
+
+        numButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (activeInput) {
+                    if (button.dataset.key == "backspace") {
+                        activeInput.value = activeInput.value.slice(0, -1);
+                    }
+                    else {
+                        if (button.dataset.key != "enter")
+                            activeInput.value += button.textContent;
+                    }
+                }
+            });
+        });
+        //setActiveInput(numpadInputs[0]);
+    });
+</script>

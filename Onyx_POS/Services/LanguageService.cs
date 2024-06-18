@@ -1,4 +1,5 @@
-﻿using NPOI.XSSF.UserModel;
+﻿using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 
 namespace Onyx_POS.Services
 {
@@ -11,7 +12,7 @@ namespace Onyx_POS.Services
             _translations = LoadTranslationsFromExcel(excelFilePath);
         }
 
-        private Dictionary<string, Dictionary<string, string>> LoadTranslationsFromExcel(string excelFilePath)
+        private static Dictionary<string, Dictionary<string, string>> LoadTranslationsFromExcel(string excelFilePath)
         {
             var translations = new Dictionary<string, Dictionary<string, string>>();
 
@@ -33,15 +34,24 @@ namespace Onyx_POS.Services
                 // Read translations
                 for (int row = 1; row < rowCount; row++)
                 {
-                    var key = sheet.GetRow(row).GetCell(0).StringCellValue;
+                    var currentRow = sheet.GetRow(row);
+                    if (currentRow == null || IsRowEmpty(currentRow)) continue; // Skip empty rows
+
+                    var keyCell = currentRow.GetCell(0);
+                    if (keyCell == null) continue; // Skip rows with no key
+
+                    var key = keyCell.StringCellValue;
+                    if (string.IsNullOrEmpty(key)) continue; // Skip rows with empty key
+
                     var translationsForThisKey = new Dictionary<string, string>();
 
                     for (int col = 1; col < colCount; col++)
                     {
                         var language = languages[col - 1];
-                        var translation = sheet.GetRow(row).GetCell(col)?.StringCellValue;
+                        var translationCell = currentRow.GetCell(col);
+                        var translation = translationCell?.StringCellValue;
 
-                        translationsForThisKey[language] = translation;
+                        translationsForThisKey[language] = translation ?? string.Empty; // Use empty string for null values
                     }
 
                     translations[key] = translationsForThisKey;
@@ -50,7 +60,18 @@ namespace Onyx_POS.Services
 
             return translations;
         }
-
+        private static bool IsRowEmpty(IRow row)
+        {
+            for (int col = row.FirstCellNum; col < row.LastCellNum; col++)
+            {
+                var cell = row.GetCell(col);
+                if (cell != null && cell.CellType != CellType.Blank)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
         public string GetTranslation(string key, string language = "en")
         {
             if (_translations.TryGetValue(key, out var translations))

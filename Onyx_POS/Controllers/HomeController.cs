@@ -22,8 +22,8 @@ namespace Onyx_POS.Controllers
         }
         public IActionResult Index()
         {
-            var terminalDeatil = _commonService.GetCuurentPosCtrl();
-            return View(terminalDeatil);
+            var terminalDetail = _commonService.GetCuurentPosCtrl();
+            return View(terminalDetail);
         }
     }
 }

@@ -15,6 +15,14 @@ namespace Onyx_POS.Services
             var data = connection.QueryFirstOrDefault<PosCtrlModel>(query);
             return data;
         }
+        public int GetTransactionNo()
+        {
+            var query = "select max(TrnNo)[TrnNo] from PosTransHead";
+            using var connection = _context.CreateConnection();
+            var data = connection.QueryFirstOrDefault<int>(query);
+            int result = data > 0 ? data + 1 : 1;
+            return result;
+        }
         public void GenerateModifiedSp(bool singleFile = true)
         {
             var modifiedSpQuery = @$"SELECT Name, Modify_Date, trim(type)Type FROM sys.objects

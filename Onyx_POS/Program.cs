@@ -14,6 +14,7 @@ builder.Services.AddSingleton<LanguageService>();
 builder.Services.AddSingleton<AppDbContext>();
 builder.Services.AddSingleton<AuthService>();
 builder.Services.AddSingleton<CommonService>();
+builder.Services.AddSingleton<SalesService>();
 // Add services to the container.
 builder.Services.AddControllersWithViews()
             .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
@@ -60,7 +61,6 @@ var localizationOptions = new RequestLocalizationOptions().SetDefaultCulture("en
     .AddSupportedUICultures(supportedCultures);
 
 app.UseRequestLocalization(localizationOptions);
-app.UseMiddleware<CookieExpirationMiddleware>();
 
 app.MapControllerRoute(
     name: "default",
