@@ -3,11 +3,11 @@
 }
 
 .h-60vh {
-    height: 60vh;
+    height: 55vh;
 }
 
 .h-40vh {
-    height: calc(40vh - 115px);
+    height: calc(45vh - 115px);
 }
 
 .custom-h-100vh {
@@ -31,4 +31,15 @@
 .symbol.symbol-light-success .symbol-label {
     background-color: #C9F7F5;
     color: #1BC5BD;
+}
+
+.sticky-table-header {
+    position: sticky;
+    top: 0;
+    background: #fff;
+}
+.table:not(.table-bordered) td:first-child, 
+.table:not(.table-bordered) th:first-child,
+.table:not(.table-bordered) tr:first-child {
+    padding-left: 15px !important;
 }

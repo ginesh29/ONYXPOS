@@ -9,6 +9,11 @@
 <!--begin::Head-->
 <head>
     <partial name="_HeadImport" />
+    <style>
+        #barcode-numpad .keypad-button-wide {
+            height: 50px !important;
+        }
+    </style>
 </head>
 <!--end::Head-->
 <body>
@@ -45,21 +50,34 @@
         <div class="row">
             <div class="col-md-5">
                 <div class="card h-60vh mb-6">
-                    <div class="card-body">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Item</th>
-                                    <th>Price</th>
-                                    <th>Qty.</th>
-                                    <th>Tax</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Dynamic rows here -->
-                            </tbody>
-                        </table>
+                    <div class="card-body p-4">
+                        <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-up"><i class="fa-solid fa-angle-up"></i></button>
+                        <div class="table-responsive mt-2 h-300px"  id="order-item-container">
+                            <table class="table-row-bordered table-sm table" id="order-item-content ps-2">
+                                <thead class="sticky-table-header bg-light-primary">
+                                    <tr class="fw-bold text-primary">
+                                        <th>Item</th>
+                                        <th>Price</th>
+                                        <th>Qty.</th>
+                                        <th>Tax</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (int i = 0; i < 50; i++)
+                                    {
+                                        <tr>
+                                            <td>Item</td>
+                                            <td>Price</td>
+                                            <td>Qty.</td>
+                                            <td>Tax</td>
+                                            <td>Total</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-down"><i class="fa-solid fa-angle-down"></i></button>
                     </div>
                 </div>
                 <div class="card h-40vh">
@@ -67,13 +85,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-5">
+            <div class="col-md-4">
                 <div class="card h-60vh mb-6">
                     <div class="card-body">
                     </div>
                 </div>
                 <div class="card h-40vh">
-                    <div class="card-body">
+                    <div class="card-body p-0" id="barcode-numpad">
+                        <partial name="_Numpad" />
                     </div>
                 </div>
             </div>
@@ -138,32 +157,16 @@
                                 Cancel
                             </button>
                         </div>
-
-                        @* <div class="input-group mt-5">
-                        <button class="btn btn-icon btn-outline" style="font-size:xx-small">
-                        <div class="d-flex flex-column">
-                        <img src="~/assets/media/sales/visible.svg" class="menu-svg-icon h-15px" />
-                        <div class="mt-1">main</div>
-                        </div>
-                        </button>
-                        <button class="btn btn-icon btn btn-outline" style="font-size:xx-small">
-                        <div class="d-flex flex-column">
-                        <img src="~/assets/media/sales/invisible.svg" class="menu-svg-icon h-15px" />
-                        <div class="mt-1">Func 2</div>
-                        </div>
-                        </button>
-                        </div> *@
                     </div>
-
                 </div>
             </div>
-
         </div>
     </div>
     <partial name="_PriceCheckModal" />
     <!--begin::Javascript-->
-@*     <audio id="error-beep" src="~/assets/beep/beep-07.wav" preload="auto"></audio> *@
+    @*     <audio id="error-beep" src="~/assets/beep/beep-07.wav" preload="auto"></audio> *@
     <partial name="_ScriptImport" />
+    <script src="~/js/page/sales.js" asp-append-version="true"></script>
     <!--end::Javascript-->
 </body>
 </html>

@@ -17,3 +17,11 @@
         </div>
     </div>
 }
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-danger d-flex align-items-center p-5 mt-5">
+        <i class="ki-duotone ki-shield-tick fs-2hx text-danger me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
+            <span>@CommonMessage.ITEMNOTFOUND</span>
+        </div>
+    </div>
+}

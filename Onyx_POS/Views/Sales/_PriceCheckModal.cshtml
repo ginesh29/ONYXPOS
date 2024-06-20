@@ -27,12 +27,9 @@
 <script>
     function onEnter() {
         var code = document.getElementById("Barcode").value;
-        fetch(`/Sales/GetPriceCheckItems?code=${code}`)
-            .then(response => {
-                return response.text();
-            })
-            .then(data => {
-                document.getElementById('PriceCheckItems').innerHTML = data;
-            })
+        var url = `/Sales/GetPriceCheckItems?code=${code}`;
+        loadAjax(url, function (response) {
+            document.getElementById('PriceCheckItems').innerHTML = response;
+        });
     }
 </script>
