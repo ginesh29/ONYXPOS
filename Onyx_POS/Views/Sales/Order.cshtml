@@ -20,7 +20,7 @@
     <nav class="navbar navbar-dark bg-primary shadow">
         <div class="container-fluid">
             <div class="d-flex mr-auto">
-                <div class="d-flex align-items-center fs-3">
+                <div class="d-flex align-items-center fs-5">
                     <div class="px-3 text-light">
                         @_languageService.GetTranslation("User Name"): <span class="fw-bold">@loggedInUser.U_Name</span>
                     </div>
@@ -52,10 +52,10 @@
                 <div class="card h-60vh mb-6">
                     <div class="card-body p-4">
                         <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-up"><i class="fa-solid fa-angle-up"></i></button>
-                        <div class="table-responsive mt-2 h-300px"  id="order-item-container">
+                        <div class="table-responsive mt-2 h-300px" id="order-item-container">
                             <table class="table-row-bordered table-sm table" id="order-item-content ps-2">
                                 <thead class="sticky-table-header bg-light-primary">
-                                    <tr class="fw-bold text-primary">
+                                    <tr class="fw-semibold text-primary">
                                         <th>Item</th>
                                         <th>Price</th>
                                         <th>Qty.</th>
@@ -80,14 +80,59 @@
                         <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-down"><i class="fa-solid fa-angle-down"></i></button>
                     </div>
                 </div>
-                <div class="card h-40vh">
+                <div class="card mb-6">
+                    <div class="card-body p-0">
+                        <div class="input-group border-primary rounded border">
+                            <span class="input-group-text bg-transparent border-right-0 pe-0">
+                                <img src="~/assets/media/sales/barcode.svg" height="15px" />
+                            </span>
+                            <input type="text" class="form-control numpad-input border-left-0" id="Barcode" name="Barcode" placeholder="Barcode" autofocus />
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="height:19vh">
                     <div class="card-body">
                     </div>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="card h-60vh mb-6">
-                    <div class="card-body">
+                    <div class="card-body p-0">
+                        <ul class="nav nav-tabs nav-pills mb-5 fs-6 fw-semibold">
+                            <li class="nav-item">
+                                <a class="nav-link p-4 rounded-0 active" data-bs-toggle="tab" href="#kt_tab_pane_1">Cash</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-4 rounded-0" data-bs-toggle="tab" href="#kt_tab_pane_2">Credit Card</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-4 rounded-0" data-bs-toggle="tab" href="#kt_tab_pane_3">Voucher</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-4 rounded-0" data-bs-toggle="tab" href="#kt_tab_pane_4">Touchpoint</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link p-4 rounded-0" data-bs-toggle="tab" href="#kt_tab_pane_5">Loyalty</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane px-5 fade show active" id="kt_tab_pane_1" role="tabpanel">
+                                11111
+                            </div>
+                            <div class="tab-pane px-5 fade" id="kt_tab_pane_2" role="tabpanel">
+                                222
+                            </div>
+                            <div class="tab-pane px-5 fade" id="kt_tab_pane_3" role="tabpanel">
+                                333
+                            </div>
+                            <div class="tab-pane px-5 fade" id="kt_tab_pane_4" role="tabpanel">
+                                444
+                            </div>
+                            <div class="tab-pane px-5 fade" id="kt_tab_pane_5" role="tabpanel">
+                                555
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card h-40vh">

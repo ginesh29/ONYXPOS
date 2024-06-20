@@ -1,7 +1,9 @@
 html {
-    direction: rtl
+    direction: rtl;
 }
-
+body {
+    font-family: "Poppins", sans-serif !important;
+}
 .welcome-card {
     background: #0A60E0 !important;
     width: 250px;
