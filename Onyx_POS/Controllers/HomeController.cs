@@ -18,7 +18,12 @@ namespace Onyx_POS.Controllers
                 CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
                 new CookieOptions { Expires = DateTime.Now.AddYears(100) }
             );
-            return RedirectToAction(nameof(Index));
+            var refererUrl = Request.Headers["Referer"].ToString();
+
+            if (!string.IsNullOrEmpty(refererUrl))
+                return Redirect(refererUrl);
+            else
+                return RedirectToAction(nameof(Index));
         }
         public IActionResult Index()
         {

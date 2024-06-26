@@ -77,6 +77,7 @@ static async void CreateElectronWindow()
 {
     var windowOptions = new BrowserWindowOptions
     {
+        Fullscreen = true,
         Resizable = false,
         AutoHideMenuBar = true,
         Show = false,
