@@ -39,59 +39,5 @@ namespace Onyx_POS.Controllers
             await _authService.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
-        //public IActionResult ChangePassword()
-        //{
-        //    return PartialView("_ChangePassword");
-        //}
-        //[HttpPost]
-        //public IActionResult ChangePassword(ChangePassword model)
-        //{
-        //    var result = new CommonResponse { Success = false };
-        //    if (_loggedInUser.UserType == (int)UserTypeEnum.User)
-        //    {
-        //        var user = _userService.ValidateUser(new LoginModel
-        //        {
-        //            LoginId = _loggedInUser.LoginId,
-        //            Password = model.OldPassword
-        //        });
-        //        if (user != null)
-        //        {
-        //            var userFromDb = _userService.GetUsers(_loggedInUser.UserCd, _loggedInUser.CoAbbr).FirstOrDefault();
-        //            _settingService.SaveUser(new UserModel
-        //            {
-        //                Cd = userFromDb.Code,
-        //                Code = userFromDb.Code,
-        //                LoginId = userFromDb.LoginId,
-        //                Abbr = userFromDb.Abbr,
-        //                UPwd = model.ConfirmPassword.Encrypt(),
-        //                Username = userFromDb.Username,
-        //                ExpiryDt = userFromDb.ExpiryDt,
-        //                EntryBy = _loggedInUser.UserCd,
-        //            });
-        //            result.Success = true;
-        //            result.Message = "Password changed Successfully";
-        //        }
-        //        else
-        //            result.Message = "Old Password is not valid";
-        //    }
-        //    else
-        //    {
-        //        var employee = _userService.ValidateEmployee(new LoginModel
-        //        {
-
-        //            LoginId = _loggedInUser.LoginId,
-        //            Password = model.OldPassword,
-        //        });
-        //        if (employee != null)
-        //        {
-        //            _employeeService.UpdateEmployeePassword(_loggedInUser.CompanyCd, _loggedInUser.UserCd, model.ConfirmPassword);
-        //            result.Success = true;
-        //            result.Message = "Password changed Successfully";
-        //        }
-        //        else
-        //            result.Message = "Old Password is not valid";
-        //    }
-        //    return Json(result);
-        //}
     }
 }

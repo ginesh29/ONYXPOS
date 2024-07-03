@@ -1,8 +1,13 @@
 body {
     font-family: "Poppins", sans-serif !important;
 }
+
 :root {
     --bs-primary: #0A60E0;
+}
+
+.price-check-items:first-child {
+    margin-top: 0 !important;
 }
 
 .h-60vh {
@@ -41,7 +46,8 @@ body {
     top: 0;
     background: #fff;
 }
-.table:not(.table-bordered) td:first-child, 
+
+.table:not(.table-bordered) td:first-child,
 .table:not(.table-bordered) th:first-child,
 .table:not(.table-bordered) tr:first-child {
     padding-left: 15px !important;

@@ -1,26 +1,44 @@
-﻿@model IEnumerable<ItemModel>
-@foreach (var item in Model)
+﻿@model IEnumerable<ItemPriceCheckModel>
+@{
+    var posDetail = _commonService.GetCuurentPosCtrl();
+    var DecimalFormat = ExtensionMethod.GetDecimalFormat(Convert.ToInt32(posDetail.P_Decimals));
+}
+@if (Model.Count() > 0)
 {
-    <div class="p-3 mt-5 border-hover-primary rounded border">
-        <div class="d-flex">
-            <div class="ms-2 w-50">
-                <label class="text-primary">Item</label>
-                <div>@item.PluName</div>
+    <div class="p-3 bg-light-primary" style="font-size:x-small">
+        @foreach (var item in Model)
+        {
+            <div class="p-3 mt-1 border-hover-primary border-primary price-check-items border" >
+                <div class="d-flex">
+                    <div class="ms-2 w-50">
+                        <label class="text-primary">Item</label>
+                        <div>@item.ItemName</div>
+                    </div>
+                    <div class="ms-2 w-50px">
+                        <label class="text-primary">Price</label>
+                        <div class="fw-bold">@item.Price.ToString(DecimalFormat)</div>
+                    </div>
+                    <div class="ms-2">
+                        <label class="text-primary">Qty</label>
+                        <div>@item.Qty</div>
+                    </div>
+                    <div class="ms-auto">
+                        <button class="btn btn-sm btn-icon btn-primary" onclick="addSaleItem('@item.ItemCode')"><i class="fa fa-plus" aria-hidden="true"></i></button>
+                    </div>
+                </div>
             </div>
-            <div class="ms-2">
-                <label class="text-primary">Price</label>
-                <div>@item.PluPrice</div>
-            </div>
-            <div class="ms-auto">
-                <button class="btn btn-primary">Add to order<img src="~/assets/media/sales/plus.svg" height="15px" class="ms-2" /> </button>
-            </div>
-        </div>
+        }
     </div>
 }
-@if (Model.Count() == 0)
+else
 {
-    <div class="alert alert-danger d-flex align-items-center p-5 mt-5">
-        <i class="ki-duotone ki-shield-tick fs-2hx text-danger me-4"><span class="path1"></span><span class="path2"></span></i>                    <div class="d-flex flex-column">
+    <div class="alert alert-danger d-flex align-items-center p-5">
+        <i class="ki-duotone ki-information-5 fs-2hx text-danger me-4">
+            <span class="path1"></span>
+            <span class="path2"></span>
+            <span class="path3"></span>
+        </i>
+        <div class="d-flex flex-column">
             <span>@CommonMessage.ITEMNOTFOUND</span>
         </div>
     </div>

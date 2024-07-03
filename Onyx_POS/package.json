@@ -1,5 +1,16 @@
 {
-  "dependencies": {
-    "jquery-validation": "^1.20.0"
+  "name": "my-electron-app",
+  "version": "1.0.0",
+  "description": "My Electron.NET Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electronize start",
+    "dist": "electron-builder"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^22.10.5"
   }
 }

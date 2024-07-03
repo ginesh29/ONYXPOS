@@ -1,4 +1,6 @@
-﻿using System.Text.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Reflection;
+using System.Text.Json;
 
 
 namespace Onyx_POS
@@ -257,6 +259,10 @@ namespace Onyx_POS
                 result += $"{days} day{(days > 1 ? "s" : "")}";
             }
             return result;
+        }
+        public static string GetDisplayName(this Enum enumValue)
+        {
+            return enumValue.GetType().GetMember(enumValue.ToString()).First().GetCustomAttribute<DisplayAttribute>()?.GetName() ?? enumValue.ToString();
         }
     }
 }

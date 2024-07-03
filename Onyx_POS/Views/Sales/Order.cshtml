@@ -1,8 +1,11 @@
-﻿@{
-    ViewData["Title"] = @_languageService.GetTranslation("Order");
+﻿@using ElectronNET.API
+@{
+    ViewData["Title"] = _languageService.GetTranslation("Order");
     Layout = null;
     var loggedInUser = _authService.GetLoggedInUser();
     PosCtrlModel TerminalDetail = ViewBag.TerminalDetail;
+    bool isElectronApp = HybridSupport.IsElectronActive;
+    ViewData["NumpadFor"] = "General";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -48,46 +51,24 @@
     </nav>
     <div class="container-fluid p-6">
         <div class="row">
-            <div class="col-md-5">
-                <div class="card h-60vh mb-6">
-                    <div class="card-body p-4">
-                        <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-up"><i class="fa-solid fa-angle-up"></i></button>
-                        <div class="table-responsive mt-2 h-350px" id="order-item-container">
-                            <table class="table-row-bordered table-sm table" id="order-item-content ps-2">
-                                <thead class="sticky-table-header bg-light-primary">
-                                    <tr class="fw-semibold text-primary">
-                                        <th>Item</th>
-                                        <th>Price</th>
-                                        <th>Qty.</th>
-                                        <th>Tax</th>
-                                        <th>Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @for (int i = 0; i < 50; i++)
-                                    {
-                                        <tr>
-                                            <td>Item</td>
-                                            <td>Price</td>
-                                            <td>Qty.</td>
-                                            <td>Tax</td>
-                                            <td>Total</td>
-                                        </tr>
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
-                        <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-down"><i class="fa-solid fa-angle-down"></i></button>
-                    </div>
-                </div>
+            <div class="col-md-6">
                 <div class="card mb-6">
                     <div class="card-body p-0">
                         <div class="input-group border-primary rounded border">
                             <span class="input-group-text bg-transparent border-right-0 pe-0">
                                 <img src="~/assets/media/sales/barcode.svg" height="15px" />
                             </span>
-                            <input type="text" class="form-control numpad-input border-left-0" id="Barcode" name="Barcode" placeholder="Barcode" autofocus />
+                            <input type="text" class="form-control numpad-input border-left-0" id="Barcode-General" name="Barcode" placeholder="Barcode" autofocus />
                         </div>
+                    </div>
+                </div>
+                <div class="card h-60vh mb-6">
+                    <div class="card-body p-4">
+                        <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-up"><i class="fa-solid fa-angle-up"></i></button>
+                        <div class="table-responsive mt-2 @(isElectronApp?"h-350px":"h-300px")" id="order-item-container">
+                            
+                        </div>
+                        <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-down"><i class="fa-solid fa-angle-down"></i></button>
                     </div>
                 </div>
                 <div class="card" style="height:19vh">
@@ -115,7 +96,6 @@
                                 <a class="nav-link p-4 rounded-0" data-bs-toggle="tab" href="#kt_tab_pane_5">Loyalty</a>
                             </li>
                         </ul>
-
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane px-5 fade show active" id="kt_tab_pane_1" role="tabpanel">
                                 11111
@@ -137,7 +117,7 @@
                 </div>
                 <div class="card h-40vh">
                     <div class="card-body p-0" id="barcode-numpad">
-                        <partial name="_Numpad" />
+                        <partial name="_Numpad" view-data="ViewData" />
                     </div>
                 </div>
             </div>
@@ -151,7 +131,6 @@
                                 </div>
                                 Price&nbsp;Check
                             </button>
-
                             <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/qty.svg" class="menu-svg-icon h-15px" />
@@ -209,8 +188,10 @@
     </div>
     <partial name="_PriceCheckModal" />
     <!--begin::Javascript-->
-    @*     <audio id="error-beep" src="~/assets/beep/beep-07.wav" preload="auto"></audio> *@
+    <audio id="beep" src="~/assets/beep/beep.wav" preload="auto"></audio>
+    <audio id="error-beep" src="~/assets/beep/error-beep.wav" preload="auto"></audio>    
     <partial name="_ScriptImport" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/page/sales.js" asp-append-version="true"></script>
     <!--end::Javascript-->
 </body>

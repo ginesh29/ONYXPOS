@@ -1,0 +1,50 @@
+﻿@model IEnumerable<POSTempItemModel>
+@{
+    var posDetail = _commonService.GetCuurentPosCtrl();
+    var DecimalFormat = ExtensionMethod.GetDecimalFormat(Convert.ToInt32(posDetail.P_Decimals));
+}
+<table class="table-row-bordered table-sm table" id="order-item-content ps-2">
+    <thead class="sticky-table-header bg-light-primary">
+        <tr class="fw-semibold text-primary">
+            <th>#</th>
+            <th>Item</th>
+            <th>Qty.</th>
+            <th>Unit</th>
+            <th>Price</th>
+            <th>Amount</th>
+            <th>Tax</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Select((value, index) => new { value, index }))
+        {
+            var amount = item.value.TrnPrice * item.value.TrnQty;
+            <tr>
+                <td>@(item.index + 1)</td>
+                <td>
+                    <div class="d-flex">
+                        <div class="w-150px">
+                            @item.value.TrnBarcode
+                        </div>
+                        <div class="d-flex flex-column ms-3">
+                            <div>
+                                @item.value.TrnName
+                            </div>
+                            @if (!string.IsNullOrEmpty(item.value.TrnNameAr))
+                            {
+                                <div>
+                                    @item.value.TrnNameAr
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </td>
+                <td>@item.value.TrnQty.ToString(DecimalFormat)</td>
+                <td>@item.value.TrnUnit</td>
+                <td>@item.value.TrnPrice.ToString(DecimalFormat)</td>
+                <td>@amount.ToString(DecimalFormat)</td>
+                <td>@item.value.TrnAmt.ToString(DecimalFormat)</td>
+            </tr>
+        }
+    </tbody>
+</table>

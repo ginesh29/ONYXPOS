@@ -24,7 +24,7 @@
         public string P_Cancel { get; set; }
         public string P_ReceiptOff { get; set; }
         public string P_Curr { get; set; }
-        public decimal? P_PosId { get; set; }
+        public int P_PosId { get; set; }
         public string P_Tord1 { get; set; }
         public string P_Tord2 { get; set; }
         public string P_Tord3 { get; set; }

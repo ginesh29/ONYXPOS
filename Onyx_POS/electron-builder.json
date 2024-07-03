@@ -1,0 +1,12 @@
+{
+  "appId": "com.example.myapp",
+  "productName": "MyElectronApp",
+  "files": [
+    "bin/Desktop/**/*",
+    "electron.manifest.json"
+  ],
+  "win": {
+    "target": "nsis",
+    "icon": "icon.ico"
+  }
+}

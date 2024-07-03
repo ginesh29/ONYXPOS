@@ -10,7 +10,7 @@
     }
     public class CommonMessage
     {
-        public const string INSERTED = "Inserted Successfully.";
+        public const string INSERTED = "added Successfully.";
         public const string UPDATED = "Updated Successfully";
         public const string DELETED = "Deleted Successfully";
         public const string SELECTROW = "Please select a record for Edit or Delete";
@@ -19,7 +19,7 @@
         public const string NOTHING = "Nothing to Display.";
         public const string SELECTONE = "Select one from the list";
         public const string USEREXISTS = "User already exists";
-        public const string ITEMNOTFOUND = "Item not found";
+        public const string ITEMNOTFOUND = "Invalid barcode/item code!";
         public const string REMOTECONPROBLEM = "Could not connect to Remote Server in order to fetch Item and Group details";
         public const string INVALIDENTRY = "Invalid Data Entry";
         public const string CANNOTUPDATEADMINPASSWORD = "You can not update Admin Password";

@@ -15,6 +15,13 @@ namespace Onyx_POS.Services
             var data = connection.QueryFirstOrDefault<PosCtrlModel>(query);
             return data;
         }
+        public ShiftModel GetActiveShiftDetail()
+        {
+            var query = "select * from Shift";
+            using var connection = _context.CreateConnection();
+            var data = connection.QueryFirstOrDefault<ShiftModel>(query);
+            return data;
+        }
         public int GetTransactionNo()
         {
             var query = "select max(TrnNo)[TrnNo] from PosTransHead";
@@ -22,6 +29,13 @@ namespace Onyx_POS.Services
             var data = connection.QueryFirstOrDefault<int>(query);
             int result = data > 0 ? data + 1 : 1;
             return result;
+        }
+        public ParameterModel GetParameterByType(string type)
+        {
+            var query = $"select * from PosParameters where Typ ='{type}'";
+            using var connection = _context.CreateConnection();
+            var data = connection.QueryFirstOrDefault<ParameterModel>(query);
+            return data;
         }
         public void GenerateModifiedSp(bool singleFile = true)
         {
@@ -60,5 +74,6 @@ namespace Onyx_POS.Services
                 File.WriteAllText(filePath, result);
             }
         }
+
     }
 }

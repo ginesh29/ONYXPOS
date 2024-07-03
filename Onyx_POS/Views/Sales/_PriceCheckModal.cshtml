@@ -1,35 +1,33 @@
-﻿<div class="modal fade" tabindex="-1" id="PriceCheckModal">
-    <div class="modal-dialog">
+﻿@{
+    ViewData["NumpadFor"] = "PriceCheck";
+}
+<div class="modal fade" tabindex="-1" id="PriceCheckModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog" style="max-width:1200px">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">Price Check</h3>
-                <!--begin::Close-->
-                <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="fa fa-times"></i>
-                </div>
-                <!--end::Close-->
             </div>
             <div class="modal-body">
-                <div class="form-group">
-                    <div class="input-group mb-5">
-                        <span class="input-group-text">
-                            <img src="~/assets/media/sales/barcode.svg" height="15px" />
-                        </span>
-                        <input type="text" class="form-control numpad-input" id="Barcode" name="Barcode" placeholder="Barcode" autofocus />
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div class="input-group mb-5">
+                                <span class="input-group-text">
+                                    <img src="~/assets/media/sales/barcode.svg" height="15px" />
+                                </span>
+                                <input type="text" class="form-control numpad-input" id="Barcode-PriceCheck" name="Barcode" placeholder="Barcode" autofocus />
+                            </div>
+                        </div>
+                        <partial name="_Numpad" view-data="ViewData" />
                     </div>
-                    <partial name="_Numpad" />
-                    <div id="PriceCheckItems"></div>
+                    <div class="col-md-6">
+                        <div id="PriceCheckItems"></div>
+                    </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline btn-outline-solid btn-outline-secondary" data-bs-dismiss="modal" id="btn-close">Close</button>
             </div>
         </div>
     </div>
 </div>
-<script>
-    function onEnter() {
-        var code = document.getElementById("Barcode").value;
-        var url = `/Sales/GetPriceCheckItems?code=${code}`;
-        loadAjax(url, function (response) {
-            document.getElementById('PriceCheckItems').innerHTML = response;
-        });
-    }
-</script>

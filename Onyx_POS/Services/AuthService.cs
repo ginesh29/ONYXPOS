@@ -38,7 +38,6 @@ namespace Onyx_POS.Services
         }
         public async Task SignOutAsync()
         {
-            //_httpContextAccessor.HttpContext.Response.Cookies.Delete(CookieRequestCultureProvider.DefaultCookieName);
             await _httpContextAccessor.HttpContext.SignOutAsync();
         }
         public LoggedInUserModel GetLoggedInUser()

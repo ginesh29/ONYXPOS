@@ -4,6 +4,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="electron-builder.json" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="ElectronNET.API" Version="23.6.2" />
     <PackageReference Include="NPOI" Version="2.7.0" />
