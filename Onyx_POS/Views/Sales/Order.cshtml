@@ -66,7 +66,6 @@
                     <div class="card-body p-4">
                         <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-up"><i class="fa-solid fa-angle-up"></i></button>
                         <div class="table-responsive mt-2 @(isElectronApp?"h-350px":"h-300px")" id="order-item-container">
-                            
                         </div>
                         <button type="button" class="btn btn-sm btn-light-secondary w-100 p-1" id="btn-table-scroll-down"><i class="fa-solid fa-angle-down"></i></button>
                     </div>
@@ -125,19 +124,24 @@
                 <div class="card custom-h-100vh">
                     <div class="card-body p-5">
                         <div class="w-50">
-                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" data-bs-toggle="modal" data-bs-target="#PriceCheckModal">
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" onclick="showQtyModal('PriceCheck')">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/price-check.svg" class="menu-svg-icon h-15px" />
                                 </div>
                                 Price&nbsp;Check
                             </button>
-                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" onclick="showQtyModal('Void')">
+                                <div class="mb-1">
+                                    <img src="~/assets/media/sales/void.svg" class="menu-svg-icon h-15px" />
+                                </div>
+                                Void
+                            </button>
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" onclick="showQtyModal('Qty')">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/qty.svg" class="menu-svg-icon h-15px" />
                                 </div>
                                 QTY
                             </button>
-
                             <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/refund.svg" class="menu-svg-icon h-15px" />
@@ -156,12 +160,7 @@
                                 </div>
                                 Cashdrawer
                             </button>
-                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
-                                <div class="mb-1">
-                                    <img src="~/assets/media/sales/void.svg" class="menu-svg-icon h-15px" />
-                                </div>
-                                Void
-                            </button>
+                            
                             <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/recall.svg" class="menu-svg-icon h-15px" />
@@ -189,7 +188,7 @@
     <partial name="_PriceCheckModal" />
     <!--begin::Javascript-->
     <audio id="beep" src="~/assets/beep/beep.wav" preload="auto"></audio>
-    <audio id="error-beep" src="~/assets/beep/error-beep.wav" preload="auto"></audio>    
+    <audio id="error-beep" src="~/assets/beep/error-beep.wav" preload="auto"></audio>
     <partial name="_ScriptImport" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/page/sales.js" asp-append-version="true"></script>

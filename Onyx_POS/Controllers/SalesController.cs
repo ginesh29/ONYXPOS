@@ -24,7 +24,7 @@ namespace Onyx_POS.Controllers
             return PartialView("_SaleItems", PosTempItems);
         }
         [HttpPost]
-        public IActionResult AddItem(string barcode)
+        public IActionResult AddItem(string barcode, int qty = 1)
         {
             var item = _salesService.PluFind(barcode);
             if (item != null)
@@ -39,7 +39,7 @@ namespace Onyx_POS.Controllers
                     SrNo = totalItems > 0 ? totalItems + 1 : 1,
                     Dept = item.Dept,
                     Plu = item.Itemcd,
-                    Qty = 1,
+                    Qty = qty,
                     Rate = item.Price,
                     Unit = item.PluUom,
                     PackQty = item.PackQty,
@@ -48,7 +48,8 @@ namespace Onyx_POS.Controllers
                     ShiftNo = shift.ShiftNo,
                     User = _loggedInUser.U_Code,
                     POSId = counter.P_PosId,
-                    LocId = counter.P_LocId
+                    LocId = counter.P_LocId,
+                    TaxAmt = item.Tax * qty
                 };
                 _salesService.InsertItem(saleItem);
             }

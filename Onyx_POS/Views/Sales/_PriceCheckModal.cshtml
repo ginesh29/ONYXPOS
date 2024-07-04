@@ -5,17 +5,34 @@
     <div class="modal-dialog" style="max-width:1200px">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Price Check</h3>
+                <h3 class="modal-title" id="PriceCheckModalLabel">Price Check</h3>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="PriceCheckModalType" value="@ViewData["NumpadFor"]" />
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <div class="input-group mb-5">
-                                <span class="input-group-text">
-                                    <img src="~/assets/media/sales/barcode.svg" height="15px" />
-                                </span>
-                                <input type="text" class="form-control numpad-input" id="Barcode-PriceCheck" name="Barcode" placeholder="Barcode" autofocus />
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="input-group mb-5">
+                                        <span class="input-group-text">
+                                            <img src="~/assets/media/sales/barcode.svg" height="15px" />
+                                        </span>
+                                        <input type="text" class="form-control numpad-input" id="Barcode-PriceCheck" name="Barcode" placeholder="Barcode" autofocus />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <div class="input-group mb-5">
+                                        <span class="input-group-text">
+                                            Qty
+                                        </span>
+                                        <input type="text" class="form-control numpad-input" id="Qty" name="qty" placeholder="Qty" value="1" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                </div>
                             </div>
                         </div>
                         <partial name="_Numpad" view-data="ViewData" />
@@ -26,7 +43,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline btn-outline-solid btn-outline-secondary" data-bs-dismiss="modal" id="btn-close">Close</button>
+                <button type="button" class="btn btn-outline btn-outline-solid btn-outline-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

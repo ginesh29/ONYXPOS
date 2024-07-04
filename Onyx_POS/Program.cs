@@ -20,7 +20,6 @@ internal class Program
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<CommonService>();
         builder.Services.AddSingleton<SalesService>();
-        builder.Services.AddSingleton<ItemService>();
         // Add services to the container.
         builder.Services.AddControllersWithViews()
                     .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)

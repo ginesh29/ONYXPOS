@@ -10,7 +10,7 @@
         public decimal Price { get; set; }
         public decimal? PackQty { get; set; }
         public string Dept { get; set; }
-        public string Tax { get; set; }
+        public decimal Tax { get; set; }
         public decimal PromPrice { get; set; }
         public decimal? ActualPrice { get; set; }
         public decimal? Discount { get; set; }

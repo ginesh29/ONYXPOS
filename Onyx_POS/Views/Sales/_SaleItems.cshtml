@@ -8,8 +8,8 @@
         <tr class="fw-semibold text-primary">
             <th>#</th>
             <th>Item</th>
-            <th>Qty.</th>
             <th>Unit</th>
+            <th>Qty.</th>
             <th>Price</th>
             <th>Amount</th>
             <th>Tax</th>
@@ -39,8 +39,8 @@
                         </div>
                     </div>
                 </td>
-                <td>@item.value.TrnQty.ToString(DecimalFormat)</td>
                 <td>@item.value.TrnUnit</td>
+                <td>@item.value.TrnQty.ToString(DecimalFormat)</td>                
                 <td>@item.value.TrnPrice.ToString(DecimalFormat)</td>
                 <td>@amount.ToString(DecimalFormat)</td>
                 <td>@item.value.TrnAmt.ToString(DecimalFormat)</td>

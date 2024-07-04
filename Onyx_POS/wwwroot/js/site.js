@@ -62,11 +62,14 @@ function postAjax(url, frmData, callback) {
         return data;
     });
 }
+function showModal(modalId) {
+    var modal = new bootstrap.Modal(document.getElementById(modalId));
+    modal.show();
+}
 function closeModal(modalId) {
-    var modal = document.getElementById(modalId);
-    var modalInstance = bootstrap.Modal.getInstance(modal);
-    if (modalInstance)
-        modalInstance.hide();
+    var myModalEl = document.getElementById(modalId);
+    var modal = bootstrap.Modal.getInstance(myModalEl);
+    modal.hide();
 }
 function playBeep() {
     const beep = document.getElementById('beep');
