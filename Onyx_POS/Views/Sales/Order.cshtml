@@ -5,6 +5,8 @@
     var loggedInUser = _authService.GetLoggedInUser();
     PosCtrlModel TerminalDetail = ViewBag.TerminalDetail;
     bool isElectronApp = HybridSupport.IsElectronActive;
+    var holdBillEnable = _commonService.GetParameterByType("HOLDBILL_AUTHORIZED");
+    var holdCentralBill = _commonService.GetParameterByType("HOLDCENTRALBILL");
     ViewData["NumpadFor"] = "General";
 }
 <!DOCTYPE html>
@@ -160,14 +162,14 @@
                                 </div>
                                 Cashdrawer
                             </button>
-                            
+
                             <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/recall.svg" class="menu-svg-icon h-15px" />
                                 </div>
                                 Recall
                             </button>
-                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" @(holdBillEnable?.Val != "Y" ? "disabled" : "") onclick="holdBill('@holdCentralBill.Val')">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/hold.svg" class="menu-svg-icon h-15px" />
                                 </div>

@@ -23,7 +23,7 @@ let activeInput = document.getElementById("Barcode-General");
 var inputElements = document.querySelectorAll('input[type="text"]');
 inputElements.forEach(function (inputElement) {
     inputElement.addEventListener("focus", function (e) {
-       activeInput = event.target;
+        activeInput = event.target;
     });
 });
 const handleClick = (event) => {
@@ -43,6 +43,17 @@ const handleClick = (event) => {
 };
 numButtons.forEach(button => {
     button.addEventListener('click', handleClick);
+});
+document.querySelectorAll('input, textarea').forEach(function (element) {
+    element.addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            var type = document.getElementById("PriceCheckModalType").value;
+            if (type != "PriceCheck" && type != "Qty" && type != "Void")
+                onEnter("General");
+            else
+                onEnter(type);
+        }
+    });
 });
 function showQtyModal(modalType) {
     document.getElementById("PriceCheckModalType").value = modalType;
@@ -95,12 +106,20 @@ function addSaleItem(barcode) {
         }
     })
 }
+function holdBill(holdCentralBill) {
+    var frmData = new FormData();
+    frmData.append("holdCentralBill", holdCentralBill == "Y");
+    postAjax("/Sales/HoldBill", frmData, function (response) {
+        showToastr(response.message);
+        loadOrderItems();
+    });
+}
 function onEnter(numpadFor) {
     if (numpadFor == "General") {
         var barcode = document.getElementById("Barcode-General").value;
         addSaleItem(barcode);
     }
-    else if (numpadFor == "PriceCheck") {
+    else {
         var modalType = document.getElementById("PriceCheckModalType").value;
         if (modalType == "PriceCheck")
             priceCheck(numpadFor)

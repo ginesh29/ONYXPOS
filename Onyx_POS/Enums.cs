@@ -18,4 +18,11 @@ namespace Onyx_POS
         [Display(Name = "SR")]
         SaleReturn,
     }
+    public enum BillStatus
+    {
+        [Display(Name = "PAID")]
+        Paid,
+        [Display(Name = "HOLD")]
+        Hold
+    }
 }

@@ -23,24 +23,18 @@
                 <td>@(item.index + 1)</td>
                 <td>
                     <div class="d-flex">
-                        <div class="w-150px">
-                            @item.value.TrnBarcode
-                        </div>
+                        <div class="w-150px">@item.value.TrnBarcode</div>
                         <div class="d-flex flex-column ms-3">
-                            <div>
-                                @item.value.TrnName
-                            </div>
+                            <div>@item.value.TrnName</div>
                             @if (!string.IsNullOrEmpty(item.value.TrnNameAr))
                             {
-                                <div>
-                                    @item.value.TrnNameAr
-                                </div>
+                                <div>@item.value.TrnNameAr</div>
                             }
                         </div>
                     </div>
                 </td>
                 <td>@item.value.TrnUnit</td>
-                <td>@item.value.TrnQty.ToString(DecimalFormat)</td>                
+                <td>@item.value.TrnQty.ToString(DecimalFormat)</td>
                 <td>@item.value.TrnPrice.ToString(DecimalFormat)</td>
                 <td>@amount.ToString(DecimalFormat)</td>
                 <td>@item.value.TrnAmt.ToString(DecimalFormat)</td>

@@ -24,10 +24,16 @@ namespace Onyx_POS.Services
         }
         public int GetTransactionNo()
         {
-            var query = "select max(TrnNo)[TrnNo] from PosTransHead";
+            var query = "select COALESCE(MAX(TrnNo), 0)[TrnNo] from PosTransHead";
             using var connection = _context.CreateConnection();
-            var data = connection.QueryFirstOrDefault<int>(query);
-            int result = data > 0 ? data + 1 : 1;
+            var result = connection.QueryFirstOrDefault<int>(query);
+            return result;
+        }
+        public int GetTransactionNoRemote()
+        {
+            var query = "select COALESCE(MAX(TrnNo), 0)[TrnNo] from PosTransHead";
+            using var connection = _context.CreateRemoteConnection();
+            var result = connection.QueryFirstOrDefault<int>(query);
             return result;
         }
         public ParameterModel GetParameterByType(string type)

@@ -1,7 +1,6 @@
 ﻿using Onyx_POS.Data;
 using Onyx_POS.Models;
 using Dapper;
-using System.Data.SqlClient;
 using System.Data;
 
 namespace Onyx_POS.Services
@@ -12,6 +11,13 @@ namespace Onyx_POS.Services
         public IEnumerable<POSTempItemModel> GetPosTempItems()
         {
             var query = "select TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode FROM PosTemp";
+            using var connection = _context.CreateConnection();
+            var data = connection.Query<POSTempItemModel>(query);
+            return data;
+        }
+        public IEnumerable<POSTempItemModel> ClearPosTempItems(int transNo)
+        {
+            var query = $"delete from  PosTemp  Where TrnNo = {transNo}";
             using var connection = _context.CreateConnection();
             var data = connection.Query<POSTempItemModel>(query);
             return data;
@@ -66,6 +72,90 @@ namespace Onyx_POS.Services
             parameters.Add("@TrnTime", DateTime.Now.ToString("HH:mm"));
             using var connection = _context.CreateConnection();
             connection.Query(query, parameters);
+        }
+        public void InsertPosTrans(IEnumerable<POSTempItemModel> PosTempItems)
+        {
+            var query = @"INSERT INTO [POSServer].[dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName,@TrnNameAr, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
+
+            using var connection = _context.CreateConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                connection.Execute(query, PosTempItems, transaction: transaction);
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("Error inserting data", ex);
+            }
+        }
+        public void InsertPosTransRemote(IEnumerable<POSTempItemModel> PosTempItems)
+        {
+            var query = @"INSERT INTO [POSServer].[dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName,@TrnNameAr, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
+
+            using var connection = _context.CreateRemoteConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                connection.Execute(query, PosTempItems, transaction: transaction);
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("Error inserting data", ex);
+            }
+        }
+        public void UpdatePosHead(PosHead model)
+        {
+            string query = @"insert into PosTransHead(TrnNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo,TrnTDisc,TrnComment) values (@TrnNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo,@TrnTDisc,@TrnComment)";
+            var parameters = new DynamicParameters();
+            parameters.Add("@TrnNo", model.TrnNo);
+            parameters.Add("@PosId", model.PosId);
+            parameters.Add("@TrnUser", model.User);
+            parameters.Add("@TrnShift", model.Shift);
+            parameters.Add("@TrnStatus", model.Status);
+            parameters.Add("@TrnDate", DateTime.Now.ToString("yyyyMMdd"));
+            parameters.Add("@TrnAmt", model.Amt);
+            parameters.Add("@TrnPayNo", 0);
+            parameters.Add("@TrnTotalQty", model.TotalQty);
+            parameters.Add("@TrnTotalItems", model.TotalItems);
+            using var connection = _context.CreateRemoteConnection();
+            connection.Query(query, parameters);
+        }
+        public void UpdatePosHeadRemote(PosHead model)
+        {
+            string query = @"insert into PosTransHead(TrnNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo) values (@TrnNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo)";
+            var parameters = new DynamicParameters();
+            parameters.Add("@TrnNo", model.TrnNo);
+            parameters.Add("@PosId", model.PosId);
+            parameters.Add("@TrnUser", model.User);
+            parameters.Add("@TrnShift", model.Shift);
+            parameters.Add("@TrnStatus", model.Status);
+            parameters.Add("@TrnDate", DateTime.Now.ToString("yyyyMMdd"));
+            parameters.Add("@TrnAmt", model.Amt);
+            parameters.Add("@TrnPayNo", 0);
+            parameters.Add("@TrnTotalQty", model.TotalQty);
+            parameters.Add("@TrnTotalItems", model.TotalItems);
+            using var connection = _context.CreateRemoteConnection();
+            connection.Query(query, parameters);
+        }
+        public void DeletePosHead(int transNo, int posId)
+        {
+            string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
+            using var connection = _context.CreateConnection();
+            connection.Query(query);
+        }
+        public void DeletePosHeadRemote(int transNo, int posId)
+        {
+            string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
+            using var connection = _context.CreateRemoteConnection();
+            connection.Query(query);
         }
     }
 }
