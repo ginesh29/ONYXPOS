@@ -63,9 +63,18 @@ function showQtyModal(modalType) {
     document.getElementById("Qty").closest('.form-group').parentElement.classList.add('d-none');
     if (modalType == "Qty")
         document.getElementById("Qty").closest('.form-group').parentElement.classList.remove('d-none');
-    if (modalType == "Void")
-        document.getElementById("Qty").value = -1;
-    showModal("PriceCheckModal");
+    if (modalType == "Void") {
+        var table = document.getElementById("order-item-content");
+        var items = table.rows.length;
+        if (items > 1) {
+            document.getElementById("Qty").value = -1;
+            showModal("PriceCheckModal");
+        }
+        else
+            showErrorAlert("No Items to void");
+    }
+    if (modalType == "PriceCheck" || modalType == "Qty")
+        showModal("PriceCheckModal");
 }
 function priceCheck(numpadFor) {
     var code = document.getElementById(`Barcode-${numpadFor}`).value;
@@ -94,16 +103,8 @@ function addSaleItem(barcode) {
             loadOrderItems();
             closeModal("PriceCheckModal");
         }
-        else {
-            Swal.fire({
-                title: "Please scan Again",
-                text: response.message,
-                icon: "warning",
-                willOpen: function () {
-                    playErrorBeep();
-                }
-            });
-        }
+        else
+            showErrorAlert("Please scan Again", response.message);
     })
 }
 function holdBill(holdCentralBill) {
@@ -113,6 +114,21 @@ function holdBill(holdCentralBill) {
         showToastr(response.message);
         loadOrderItems();
     });
+}
+function cancelBill(transNo) {
+    var table = document.getElementById("order-item-content");
+    var items = table.rows.length;
+    if (items > 1)
+        showConfirmation("Are you sure?", "You want to cancel", function () {
+            var frmData = new FormData();
+            frmData.append("transNo", transNo);
+            postAjax("/Sales/CancelBill", frmData, function (response) {
+                showToastr(response.message);
+                loadOrderItems();
+            });
+        });
+    else
+        showErrorAlert("No Transactions available");
 }
 function onEnter(numpadFor) {
     if (numpadFor == "General") {

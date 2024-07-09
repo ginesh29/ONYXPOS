@@ -79,3 +79,29 @@ function playErrorBeep() {
     const errorBeep = document.getElementById('error-beep');
     errorBeep.play();
 }
+function showConfirmation(title, text, callback) {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#0A60E0",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes"
+    }).then((result) => {
+        if (result.isConfirmed)
+            callback();
+    });
+}
+function showErrorAlert(title, text) {
+    Swal.fire({
+        title: title,
+        text: text,
+        icon: "warning",
+        confirmButtonColor: "#0A60E0",
+        cancelButtonColor: "#d33",
+        willOpen: function () {
+            playErrorBeep();
+        }
+    });
+}

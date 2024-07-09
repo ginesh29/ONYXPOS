@@ -2,6 +2,7 @@
 using Onyx_POS.Models;
 using Dapper;
 using System.Data;
+using NPOI.POIFS.Properties;
 
 namespace Onyx_POS.Services
 {
@@ -58,7 +59,7 @@ namespace Onyx_POS.Services
             parameters.Add("@TrnPackQty", model.PackQty);
             parameters.Add("@TrnName", model.Name);
             parameters.Add("@TrnNameAr", model.NameAr);
-            parameters.Add("@TrnNetVal", model.Rate * model.Qty);
+            parameters.Add("@TrnNetVal", (model.Rate * model.Qty) - model.TaxAmt);
             parameters.Add("@TrnTDiscType", model.TrnDiscType);
             parameters.Add("@TrnMode", TransMode.Normal.GetDisplayName());
             parameters.Add("@TrnType", TransType.Sale.GetDisplayName());
@@ -75,9 +76,8 @@ namespace Onyx_POS.Services
         }
         public void InsertPosTrans(IEnumerable<POSTempItemModel> PosTempItems)
         {
-            var query = @"INSERT INTO [POSServer].[dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
                             VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName,@TrnNameAr, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
-
             using var connection = _context.CreateConnection();
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -94,7 +94,7 @@ namespace Onyx_POS.Services
         }
         public void InsertPosTransRemote(IEnumerable<POSTempItemModel> PosTempItems)
         {
-            var query = @"INSERT INTO [POSServer].[dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
                             VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName,@TrnNameAr, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
 
             using var connection = _context.CreateRemoteConnection();
@@ -113,6 +113,7 @@ namespace Onyx_POS.Services
         }
         public void UpdatePosHead(PosHead model)
         {
+            DeletePosHead(model.TrnNo, model.PosId);
             string query = @"insert into PosTransHead(TrnNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo,TrnTDisc,TrnComment) values (@TrnNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo,@TrnTDisc,@TrnComment)";
             var parameters = new DynamicParameters();
             parameters.Add("@TrnNo", model.TrnNo);
@@ -125,7 +126,9 @@ namespace Onyx_POS.Services
             parameters.Add("@TrnPayNo", 0);
             parameters.Add("@TrnTotalQty", model.TotalQty);
             parameters.Add("@TrnTotalItems", model.TotalItems);
-            using var connection = _context.CreateRemoteConnection();
+            parameters.Add("@TrnTDisc", 0);
+            parameters.Add("@TrnComment", string.Empty);
+            using var connection = _context.CreateConnection();
             connection.Query(query, parameters);
         }
         public void UpdatePosHeadRemote(PosHead model)

@@ -8,6 +8,7 @@
     var holdBillEnable = _commonService.GetParameterByType("HOLDBILL_AUTHORIZED");
     var holdCentralBill = _commonService.GetParameterByType("HOLDCENTRALBILL");
     ViewData["NumpadFor"] = "General";
+    var transNo = ViewBag.TransactionNo;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -30,7 +31,7 @@
                         @_languageService.GetTranslation("User Name"): <span class="fw-bold">@loggedInUser.U_Name</span>
                     </div>
                     <div class="px-3 text-light">
-                        @_languageService.GetTranslation("Bill Number"): <span class="fw-bold">@ViewBag.TransactionNo</span>
+                        @_languageService.GetTranslation("Bill Number"): <span class="fw-bold">@transNo</span>
                     </div>
                     <div class="px-3 text-light">
                         @_languageService.GetTranslation("Location"): <span class="fw-bold">@TerminalDetail.P_LocName</span>
@@ -175,7 +176,7 @@
                                 </div>
                                 Hold
                             </button>
-                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small">
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" onclick="cancelBill('@transNo')">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/cancel.svg" class="menu-svg-icon h-15px" />
                                 </div>

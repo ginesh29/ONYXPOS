@@ -16,8 +16,8 @@ namespace Onyx_POS.Controllers
         public IActionResult Order()
         {
             var terminalDetail = _commonService.GetCuurentPosCtrl();
-            var transNo = _commonService.GetTransactionNo();
-            ViewBag.TransactionNo = transNo > 0 ? transNo + 1 : 1;
+            var transNo = _commonService.IsActiveTransaction() ? _commonService.GetCurrentTransactionNo() : _commonService.GetNextTransactionNo();
+            ViewBag.TransactionNo = transNo;
             ViewBag.TerminalDetail = terminalDetail;
             return View();
         }
@@ -36,11 +36,11 @@ namespace Onyx_POS.Controllers
                 var counter = _commonService.GetCuurentPosCtrl();
                 var posTempItems = _salesService.GetPosTempItems();
                 var totalItems = posTempItems.Count();
-                var transNo = _commonService.GetTransactionNo();
+                var transNo = _commonService.IsActiveTransaction() ? _commonService.GetCurrentTransactionNo() : _commonService.GetNextTransactionNo();
                 var saleItem = new SaleItemModel
                 {
                     Barcode = barcode,
-                    TrnNo = transNo > 0 ? transNo + 1 : 1,
+                    TrnNo = transNo,
                     SrNo = totalItems > 0 ? totalItems + 1 : 1,
                     Dept = item.Dept,
                     Plu = item.Itemcd,
@@ -54,20 +54,21 @@ namespace Onyx_POS.Controllers
                     User = _loggedInUser.U_Code,
                     POSId = counter.P_PosId,
                     LocId = counter.P_LocId,
-                    TaxAmt = item.Tax * qty
+                    TaxAmt = item.Tax
                 };
                 _salesService.InsertItem(saleItem);
                 var posHead = new PosHead
                 {
+                    TrnNo = transNo,
                     PosId = _posDetail.P_PosId,
                     User = _loggedInUser.U_Code,
                     Shift = _shiftDetail.ShiftNo,
-                    Status = BillStatus.Hold.GetDisplayName(),
+                    Status = TransStatus.New.GetDisplayName(),
                     Amt = posTempItems.Sum(m => m.TrnPrice * m.TrnQty),
                     TotalQty = posTempItems.Sum(m => m.TrnQty),
                     TotalItems = posTempItems.Count()
                 };
-                //_salesService.UpdatePosHead(posHead);
+                _salesService.UpdatePosHead(posHead);
             }
             var result = new CommonResponse
             {
@@ -84,16 +85,15 @@ namespace Onyx_POS.Controllers
         [HttpPost]
         public IActionResult HoldBill(bool holdCentralBill)
         {
-            int holdTransNo = holdCentralBill ? _commonService.GetTransactionNoRemote() + 1 : _commonService.GetTransactionNo() + 1;
-            int transNo = _commonService.GetTransactionNo();
-            transNo = transNo > 0 ? transNo : 1;
+            int holdTransNo = holdCentralBill ? _commonService.GetNextTransactionNoRemote() : _commonService.GetNextTransactionNo();
+            int transNo = _commonService.GetCurrentTransactionNo();
             var PosTempItems = _salesService.GetPosTempItems().Where(m => m.TrnNo == transNo).Select(m => { m.TrnNo = holdTransNo; return m; });
             var posHead = new PosHead
             {
                 PosId = _posDetail.P_PosId,
                 User = _loggedInUser.U_Code,
                 Shift = _shiftDetail.ShiftNo,
-                Status = BillStatus.Hold.GetDisplayName(),
+                Status = TransStatus.Hold.GetDisplayName(),
                 Amt = PosTempItems.Sum(m => m.TrnPrice * m.TrnQty),
                 TotalQty = PosTempItems.Sum(m => m.TrnQty),
                 TotalItems = PosTempItems.Count()
@@ -118,6 +118,31 @@ namespace Onyx_POS.Controllers
             {
                 Success = true,
                 Message = $"Bill # {transNo} Hold successfully",
+            };
+            return Json(result);
+        }
+        [HttpPost]
+        public IActionResult CancelBill(int transNo)
+        {
+            var PosTempItems = _salesService.GetPosTempItems().Where(m => m.TrnNo == transNo).Select(m => { m.TrnMode = TransMode.Cancelled.GetDisplayName(); return m; });
+            var posHead = new PosHead
+            {
+                TrnNo = transNo,
+                PosId = _posDetail.P_PosId,
+                User = _loggedInUser.U_Code,
+                Shift = _shiftDetail.ShiftNo,
+                Status = TransStatus.Cancelled.GetDisplayName(),
+                Amt = PosTempItems.Sum(m => m.TrnPrice * m.TrnQty),
+                TotalQty = PosTempItems.Sum(m => m.TrnQty),
+                TotalItems = PosTempItems.Count()
+            };
+            _salesService.UpdatePosHead(posHead);
+            _salesService.InsertPosTrans(PosTempItems);
+            _salesService.ClearPosTempItems(transNo);
+            var result = new CommonResponse
+            {
+                Success = true,
+                Message = $"Bill # {transNo} Cancel successfully",
             };
             return Json(result);
         }

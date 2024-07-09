@@ -22,19 +22,38 @@ namespace Onyx_POS.Services
             var data = connection.QueryFirstOrDefault<ShiftModel>(query);
             return data;
         }
-        public int GetTransactionNo()
+        public bool IsActiveTransaction()
         {
-            var query = "select COALESCE(MAX(TrnNo), 0)[TrnNo] from PosTransHead";
+            var query = "select count(*) from PosTransHead where TrnStatus='NEW'";
+            using var connection = _context.CreateConnection();
+            var result = connection.QueryFirstOrDefault<int>(query);
+            return result > 0;
+        }
+        public int GetCurrentTransactionNo()
+        {
+            var query = "select COALESCE(MAX(TrnNo), 1)[TrnNo] from PosTransHead";
             using var connection = _context.CreateConnection();
             var result = connection.QueryFirstOrDefault<int>(query);
             return result;
         }
-        public int GetTransactionNoRemote()
+        public int GetNextTransactionNo()
         {
-            var query = "select COALESCE(MAX(TrnNo), 0)[TrnNo] from PosTransHead";
+            int transNo = GetCurrentTransactionNo();
+            transNo = transNo > 0 ? transNo + 1 : 1;
+            return transNo;
+        }
+        public int GetCurrentTransactionNoRemote()
+        {
+            var query = "select COALESCE(MAX(TrnNo), 1)[TrnNo] from PosTransHead";
             using var connection = _context.CreateRemoteConnection();
             var result = connection.QueryFirstOrDefault<int>(query);
             return result;
+        }
+        public int GetNextTransactionNoRemote()
+        {
+            int transNo = GetCurrentTransactionNoRemote();
+            transNo = transNo > 0 ? transNo + 1 : 1;
+            return transNo;
         }
         public ParameterModel GetParameterByType(string type)
         {
