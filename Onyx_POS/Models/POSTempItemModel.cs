@@ -27,7 +27,6 @@
         public decimal? TrnShift { get; set; }
         public decimal? TrnNetVal { get; set; }
         public string TrnName { get; set; }
-        public string TrnNameAr { get; set; }
         public string TrnDesc { get; set; }
         public decimal TrnAmt { get; set; }
         public string TrnSalesman { get; set; }

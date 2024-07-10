@@ -10,7 +10,7 @@ namespace Onyx_POS.Services
         private readonly AppDbContext _context = context;
         public IEnumerable<POSTempItemModel> GetPosTempItems()
         {
-            var query = "select TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode FROM PosTemp";
+            var query = "select TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode FROM PosTemp";
             using var connection = _context.CreateConnection();
             var data = connection.Query<POSTempItemModel>(query);
             return data;
@@ -44,8 +44,8 @@ namespace Onyx_POS.Services
         }
         public void InsertItem(SaleItemModel model)
         {
-            string query = @"insert into PosTemp     (TrnNo,TrnSlNo,TrnDt,TrnDept,TrnPlu,TrnQty,TrnPrice,TrnTDisc,TrnUnit,TrnPackQty,TrnName,TrnNameAr,TrnNetVal,TrnTDiscType,TrnMode,TrnBarcode,TrnUser,TrnShift,TrnAmt,TrnLoc,TrnPosId,TrnSalesman,TrnPrLvl,TrnType,TrnErrPlu,TrnParty,TrnTime)
-           values(@TrnNo,@TrnSlNo,@TrnDt,@TrnDept,@TrnPlu,@TrnQty,@TrnPrice,0,@TrnUnit,@TrnPackQty,@TrnName,@TrnNameAr,@TrnNetVal,@TrnTDiscType,@TrnMode,@TrnBarcode,@TrnUser,@TrnShift,@TrnAmt,@TrnLoc,@TrnPosId,@TrnSalesman,'1',@TrnType,'Y','CASH',@TrnTime)";
+            string query = @"insert into PosTemp     (TrnNo,TrnSlNo,TrnDt,TrnDept,TrnPlu,TrnQty,TrnPrice,TrnTDisc,TrnUnit,TrnPackQty,TrnName,TrnNetVal,TrnTDiscType,TrnMode,TrnBarcode,TrnUser,TrnShift,TrnAmt,TrnLoc,TrnPosId,TrnSalesman,TrnPrLvl,TrnType,TrnErrPlu,TrnParty,TrnTime)
+           values(@TrnNo,@TrnSlNo,@TrnDt,@TrnDept,@TrnPlu,@TrnQty,@TrnPrice,0,@TrnUnit,@TrnPackQty,@TrnName,@TrnNetVal,@TrnTDiscType,@TrnMode,@TrnBarcode,@TrnUser,@TrnShift,@TrnAmt,@TrnLoc,@TrnPosId,@TrnSalesman,'1',@TrnType,'Y','CASH',@TrnTime)";
             var parameters = new DynamicParameters();
             parameters.Add("@TrnNo", model.TrnNo);
             parameters.Add("@TrnSlNo", model.SrNo);
@@ -57,7 +57,6 @@ namespace Onyx_POS.Services
             parameters.Add("@TrnUnit", model.Unit);
             parameters.Add("@TrnPackQty", model.PackQty);
             parameters.Add("@TrnName", model.Name);
-            parameters.Add("@TrnNameAr", model.NameAr);
             parameters.Add("@TrnNetVal", (model.Rate * model.Qty) - model.TaxAmt);
             parameters.Add("@TrnTDiscType", model.TrnDiscType);
             parameters.Add("@TrnMode", model.TrnMode);
@@ -75,8 +74,8 @@ namespace Onyx_POS.Services
         }
         public void InsertPosTrans(IEnumerable<POSTempItemModel> PosTempItems)
         {
-            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
-                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName,@TrnNameAr, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
+            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
             using var connection = _context.CreateConnection();
             connection.Open();
             using var transaction = connection.BeginTransaction();
@@ -93,8 +92,8 @@ namespace Onyx_POS.Services
         }
         public void InsertPosTransRemote(IEnumerable<POSTempItemModel> PosTempItems)
         {
-            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName,TrnNameAr, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
-                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName,@TrnNameAr, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
+            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
 
             using var connection = _context.CreateRemoteConnection();
             connection.Open();
