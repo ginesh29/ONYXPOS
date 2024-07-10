@@ -6,10 +6,11 @@ using Onyx_POS.Services;
 namespace Onyx_POS.Controllers
 {
     [Authorize]
-    public class SalesController(CommonService commonService, SalesService salesService, AuthService authService) : Controller
+    public class SalesController(CommonService commonService, SalesService salesService, AuthService authService, LogService logService) : Controller
     {
         private readonly CommonService _commonService = commonService;
         private readonly SalesService _salesService = salesService;
+        private readonly LogService _logService = logService;
         private readonly LoggedInUserModel _loggedInUser = authService.GetLoggedInUser();
         private readonly PosCtrlModel _posDetail = commonService.GetCuurentPosCtrl();
         private readonly ShiftModel _shiftDetail = commonService.GetActiveShiftDetail();
@@ -115,7 +116,7 @@ namespace Onyx_POS.Controllers
                 _salesService.UpdatePosHead(posHead);
             }
             _salesService.ClearPosTempItems(transNo);
-
+            _logService.PosLog("Hold", $"Bill on Hold : {transNo}");
             var result = new CommonResponse
             {
                 Success = true,
@@ -141,6 +142,7 @@ namespace Onyx_POS.Controllers
             _salesService.UpdatePosHead(posHead);
             _salesService.InsertPosTrans(PosTempItems);
             _salesService.ClearPosTempItems(transNo);
+            _logService.PosLog("Cancel", $"Cancel  Bill {transNo}");
             var result = new CommonResponse
             {
                 Success = true,

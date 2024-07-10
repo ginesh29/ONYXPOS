@@ -5,11 +5,11 @@ using Onyx_POS.Services;
 
 namespace Onyx_POS.Controllers
 {
-    public class AccountController(CommonService commonService, AuthService authService) : Controller
+    public class AccountController(CommonService commonService, AuthService authService, LogService logService) : Controller
     {
         private readonly CommonService _commonService = commonService;
         private readonly AuthService _authService = authService;
-
+        private readonly LogService _logService = logService;
         public IActionResult Login()
         {
             _commonService.GenerateModifiedSp();
@@ -29,6 +29,7 @@ namespace Onyx_POS.Controllers
                 await _authService.SignInUserAsync(validateUser);
                 result.Success = true;
                 result.Message = "Login Successfully";
+                _logService.PosLog("LOGIN", "Pos Logged in");
             }
             else
                 result.Message = CommonMessage.INVALIDUSER;
