@@ -57,16 +57,16 @@ document.querySelectorAll('input, textarea').forEach(function (element) {
 });
 function showQtyModal(modalType) {
     document.getElementById("PriceCheckModalType").value = modalType;
-    var modalTitle = modalType == "PriceCheck" ? "Item Price Check" : modalType == "Void" ? "Void Item" : "Update Item Quantity";
+    var modalTitle = modalType == "PriceCheck" ? "Item Price Check" : modalType == "Void" ? "Void Item" : modalType == "Refund" ? "Refund Item" : "Update Item Quantity";
     document.getElementById("PriceCheckModalLabel").textContent = modalTitle;
     document.getElementById("Qty").value = 1;
     document.getElementById("Qty").closest('.form-group').parentElement.classList.add('d-none');
     if (modalType == "Qty")
         document.getElementById("Qty").closest('.form-group').parentElement.classList.remove('d-none');
-    if (modalType == "Void") {
+    if (modalType == "Void" || modalType == "Refund") {
         var table = document.getElementById("order-item-content");
         var items = table.rows.length;
-        if (items > 1) {
+        if (items > 1 || modalType == "Refund") {
             document.getElementById("Qty").value = -1;
             showModal("PriceCheckModal");
         }
@@ -94,8 +94,10 @@ document.getElementById('PriceCheckModal').addEventListener('hidden.bs.modal', f
 function addSaleItem(barcode) {
     var frmData = new FormData();
     var qty = document.getElementById("Qty").value;
+    var modalType = document.getElementById("PriceCheckModalType").value;
     frmData.append("barcode", barcode);
     frmData.append("qty", qty);
+    frmData.append("type", modalType);
     postAjax(`/Sales/AddItem`, frmData, function (response) {
         if (response.success) {
             playBeep();

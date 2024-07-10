@@ -61,8 +61,8 @@ namespace Onyx_POS.Services
             parameters.Add("@TrnNameAr", model.NameAr);
             parameters.Add("@TrnNetVal", (model.Rate * model.Qty) - model.TaxAmt);
             parameters.Add("@TrnTDiscType", model.TrnDiscType);
-            parameters.Add("@TrnMode", TransMode.Normal.GetDisplayName());
-            parameters.Add("@TrnType", TransType.Sale.GetDisplayName());
+            parameters.Add("@TrnMode", model.TrnMode);
+            parameters.Add("@TrnType", model.TrnType);
             parameters.Add("@TrnBarcode", model.Barcode);
             parameters.Add("@TrnShift", model.ShiftNo);
             parameters.Add("@TrnAmt", Math.Round(model.TaxAmt, 2).ToString("0.00"));

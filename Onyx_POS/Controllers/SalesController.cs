@@ -27,7 +27,7 @@ namespace Onyx_POS.Controllers
             return PartialView("_SaleItems", PosTempItems);
         }
         [HttpPost]
-        public IActionResult AddItem(string barcode, int qty = 1)
+        public IActionResult AddItem(string barcode, string type, int qty = 1)
         {
             var item = _salesService.PluFind(barcode);
             if (item != null)
@@ -54,7 +54,9 @@ namespace Onyx_POS.Controllers
                     User = _loggedInUser.U_Code,
                     POSId = counter.P_PosId,
                     LocId = counter.P_LocId,
-                    TaxAmt = item.Tax
+                    TaxAmt = Math.Round(item.Price * qty / (100 + Convert.ToDecimal(item.Tax)) * 100 / 100 * Convert.ToDecimal(item.Tax), 2),
+                    TrnMode = TransMode.Normal.GetDisplayName(),
+                    TrnType = type == "Refund" ? TransType.SaleReturn.GetDisplayName() : TransType.Sale.GetDisplayName(),
                 };
                 _salesService.InsertItem(saleItem);
                 var posHead = new PosHead
