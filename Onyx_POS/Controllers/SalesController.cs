@@ -155,5 +155,15 @@ namespace Onyx_POS.Controllers
             };
             return Json(result);
         }
+        public IActionResult CheckAuth(string key)
+        {
+            var item = _commonService.GetParameterByType(key).FirstOrDefault();
+            var result = new CommonResponse
+            {
+                Success = true,
+                Data = new { allowed = item.Val == "Y" || _loggedInUser.U_Code == "001" }
+            };
+            return Json(result);
+        }
     }
 }

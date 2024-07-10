@@ -85,11 +85,11 @@ namespace Onyx_POS.Services
             transNo = transNo > 0 ? transNo + 1 : 1;
             return transNo;
         }
-        public ParameterModel GetParameterByType(string type)
+        public IEnumerable<ParameterModel> GetParameterByType(string type)
         {
-            var query = $"select * from PosParameters where Typ ='{type}'";
+            var query = $"select * from PosParameters where Typ in ('{type}')";
             using var connection = _context.CreateConnection();
-            var data = connection.QueryFirstOrDefault<ParameterModel>(query);
+            var data = connection.Query<ParameterModel>(query);
             return data;
         }
         public void GenerateModifiedSp(bool singleFile = true)

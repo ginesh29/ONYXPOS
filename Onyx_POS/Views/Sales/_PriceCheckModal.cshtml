@@ -2,7 +2,7 @@
     ViewData["NumpadFor"] = "PriceCheck";
 }
 <div class="modal fade" tabindex="-1" id="PriceCheckModal" data-bs-backdrop="static" data-bs-keyboard="false">
-    <div class="modal-dialog" style="max-width:1200px">
+    <div class="modal-dialog" style="max-width:1200px" id="PriceCheckModalDialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="PriceCheckModalLabel">Price Check</h3>
@@ -10,7 +10,7 @@
             <div class="modal-body">
                 <input type="hidden" id="PriceCheckModalType" value="General" />
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" id="left-container">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">

@@ -55,25 +55,48 @@ document.querySelectorAll('input, textarea').forEach(function (element) {
         }
     });
 });
-function showQtyModal(modalType) {
+function showQtyModal(e, modalType) {
     document.getElementById("PriceCheckModalType").value = modalType;
     var modalTitle = modalType == "PriceCheck" ? "Item Price Check" : modalType == "Void" ? "Void Item" : modalType == "Refund" ? "Refund Item" : "Update Item Quantity";
     document.getElementById("PriceCheckModalLabel").textContent = modalTitle;
-    document.getElementById("Qty").value = 1;
-    document.getElementById("Qty").closest('.form-group').parentElement.classList.add('d-none');
-    if (modalType == "Qty")
-        document.getElementById("Qty").closest('.form-group').parentElement.classList.remove('d-none');
-    if (modalType == "Void" || modalType == "Refund") {
-        var table = document.getElementById("order-item-content");
-        var items = table.rows.length;
-        if (items > 1 || modalType == "Refund") {
-            document.getElementById("Qty").value = -1;
-            showModal("PriceCheckModal");
-        }
-        else
-            showErrorAlert("No Items to void");
+    document.getElementById("PriceCheckModalDialog").style.maxWidth = "1200px";
+    document.getElementById("left-container").classList.add("col-md-6");
+    document.getElementById("left-container").classList.remove("col-md-12");
+    var authType = e.dataset.authType;
+    if (authType) {
+        var allowedAuth = false;
+        checkAuth(authType, function (response) {
+            allowedAuth = response.data.allowed;
+            if (allowedAuth || authType == "allowed") {
+                document.getElementById("Qty").value = 1;
+                document.getElementById("Qty").closest('.form-group').parentElement.classList.add('d-none');
+                if (modalType == "Qty") {
+                    document.getElementById("Qty").closest('.form-group').parentElement.classList.remove('d-none');
+                    document.getElementById("PriceCheckModalDialog").style.maxWidth = "600px";
+                    document.getElementById("left-container").classList.remove("col-md-6");
+                    document.getElementById("left-container").classList.add("col-md-12");
+                }
+                if (modalType == "Void" || modalType == "Refund") {
+                    var table = document.getElementById("order-item-content");
+                    var items = table.rows.length;
+                    document.getElementById("PriceCheckModalDialog").style.maxWidth = "600px";
+                    document.getElementById("left-container").classList.remove("col-md-6");
+                    document.getElementById("left-container").classList.add("col-md-12");
+                    if (items > 1 || modalType == "Refund") {
+                        document.getElementById("Qty").value = -1;
+                        showModal("PriceCheckModal");
+                    }
+                    else
+                        showErrorAlert("No Items to void");
+                }
+                if (modalType == "Qty")
+                    showModal("PriceCheckModal");
+            }
+            else
+                alert(allowedAuth);
+        });
     }
-    if (modalType == "PriceCheck" || modalType == "Qty")
+    if (modalType == "PriceCheck")
         showModal("PriceCheckModal");
 }
 function priceCheck(numpadFor) {
@@ -109,28 +132,65 @@ function addSaleItem(barcode) {
             showErrorAlert("Please scan Again", response.message);
     })
 }
-function holdBill(holdCentralBill) {
-    var frmData = new FormData();
-    frmData.append("holdCentralBill", holdCentralBill == "Y");
-    postAjax("/Sales/HoldBill", frmData, function (response) {
-        showToastr(response.message);
-        loadOrderItems();
-    });
+function holdBill(e, transNo) {
+    var authType = e.dataset.authType;
+    var allowedAuth = false;
+    checkAuth(authType, function (response) {
+        allowedAuth = response.data.allowed;
+        if (allowedAuth || authType == "allowed") {
+
+            var table = document.getElementById("order-item-content");
+            var items = table.rows.length;
+            if (items > 1) {
+                var frmData = new FormData();
+                frmData.append("holdCentralBill", holdCentralBill == "Y");
+                postAjax("/Sales/HoldBill", frmData, function (response) {
+                    showToastr(response.message);
+                    loadOrderItems();
+                });
+            }
+            else
+                showErrorAlert("No Transactions available");
+        }
+        else
+            alert(allowedAuth);
+    })
 }
-function cancelBill(transNo) {
-    var table = document.getElementById("order-item-content");
-    var items = table.rows.length;
-    if (items > 1)
-        showConfirmation("Are you sure?", "You want to cancel", function () {
-            var frmData = new FormData();
-            frmData.append("transNo", transNo);
-            postAjax("/Sales/CancelBill", frmData, function (response) {
-                showToastr(response.message);
-                loadOrderItems();
-            });
-        });
-    else
-        showErrorAlert("No Transactions available");
+function recallBill(e) {
+    var authType = e.dataset.authType;
+    var allowedAuth = false;
+    checkAuth(authType, function (response) {
+        allowedAuth = response.data.allowed;
+        if (allowedAuth || authType == "allowed") {
+        }
+        else
+            alert(allowedAuth);
+    })
+}
+function cancelBill(e, transNo) {
+    var authType = e.dataset.authType;
+    var allowedAuth = false;
+    checkAuth(authType, function (response) {
+        allowedAuth = response.data.allowed;
+        if (allowedAuth || authType == "allowed") {
+
+            var table = document.getElementById("order-item-content");
+            var items = table.rows.length;
+            if (items > 1)
+                showConfirmation("Are you sure?", "You want to cancel", function () {
+                    var frmData = new FormData();
+                    frmData.append("transNo", transNo);
+                    postAjax("/Sales/CancelBill", frmData, function (response) {
+                        showToastr(response.message);
+                        loadOrderItems();
+                    });
+                });
+            else
+                showErrorAlert("No Transactions available");
+        }
+        else
+            alert(allowedAuth);
+    })
 }
 function onEnter(numpadFor) {
     if (numpadFor == "General") {
@@ -161,3 +221,8 @@ function loadOrderItems() {
     });
 }
 loadOrderItems();
+function checkAuth(authType, callback) {
+    getAjax(`/Sales/CheckAuth?key=${authType}`, function (response) {
+        callback(response);
+    });
+}

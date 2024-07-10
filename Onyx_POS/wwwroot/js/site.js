@@ -41,6 +41,16 @@ function showToastr(msg, type) {
         toastrContainer.style.opacity = 0;
     }, 3000);
 }
+function getAjax(url, callback) {
+    fetch(url)
+        .then(response => {
+            return response.json();
+        })
+        .then(data => {
+            callback(data);
+            return data;
+        })
+}
 function loadAjax(url, callback) {
     fetch(url)
         .then(response => {
