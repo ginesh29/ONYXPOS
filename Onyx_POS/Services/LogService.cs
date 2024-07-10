@@ -1,6 +1,4 @@
 ﻿using Onyx_POS.Data;
-using System.Data.SqlClient;
-using System.Data;
 using Dapper;
 using Onyx_POS.Models;
 
@@ -8,8 +6,6 @@ namespace Onyx_POS.Services
 {
     public class LogService(AuthService authService, CommonService commonService, AppDbContext context)
     {
-        private readonly AuthService _authService = authService;
-        private readonly CommonService _commonService = commonService;
         private readonly LoggedInUserModel _loggedInUser = authService.GetLoggedInUser();
         private readonly ShiftModel _shiftDetail = commonService.GetActiveShiftDetail();
         private readonly AppDbContext _context = context;

@@ -2,12 +2,14 @@
 using Onyx_POS.Models;
 using Dapper;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace Onyx_POS.Services
 {
-    public class SalesService(AppDbContext context)
+    public class SalesService(AppDbContext context, CommonService commonService)
     {
         private readonly AppDbContext _context = context;
+        private readonly string _remoteConnectionString = commonService.GetRemoteConnectionString();
         public IEnumerable<POSTempItemModel> GetPosTempItems()
         {
             var query = "select TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode FROM PosTemp";
@@ -95,7 +97,7 @@ namespace Onyx_POS.Services
             var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
                             VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
 
-            using var connection = _context.CreateRemoteConnection();
+            var connection = new SqlConnection(_remoteConnectionString);
             connection.Open();
             using var transaction = connection.BeginTransaction();
             try
@@ -143,7 +145,7 @@ namespace Onyx_POS.Services
             parameters.Add("@TrnPayNo", 0);
             parameters.Add("@TrnTotalQty", model.TotalQty);
             parameters.Add("@TrnTotalItems", model.TotalItems);
-            using var connection = _context.CreateRemoteConnection();
+            var connection = new SqlConnection(_remoteConnectionString);
             connection.Query(query, parameters);
         }
         public void DeletePosHead(int transNo, int posId)
@@ -155,7 +157,7 @@ namespace Onyx_POS.Services
         public void DeletePosHeadRemote(int transNo, int posId)
         {
             string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
-            using var connection = _context.CreateRemoteConnection();
+            var connection = new SqlConnection(_remoteConnectionString);
             connection.Query(query);
         }
     }

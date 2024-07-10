@@ -25,6 +25,11 @@ namespace Onyx_POS.Controllers
         public IActionResult FetchSaleItems()
         {
             var PosTempItems = _salesService.GetPosTempItems();
+            foreach (var item in PosTempItems)
+            {
+                var pluItem = _salesService.PluFind(item.TrnBarcode);
+                item.TrnNameAr = pluItem.ItemNameAr;
+            }
             return PartialView("_SaleItems", PosTempItems);
         }
         [HttpPost]

@@ -43,7 +43,10 @@
                         @_languageService.GetTranslation("Location"): <span class="fw-bold">@TerminalDetail.P_LocName</span>
                     </div>
                     <div class="px-3 text-light">
-                        @_languageService.GetTranslation("Terminal #"): <span class="fw-bold">@TerminalDetail.P_PosId</span>
+                        @_languageService.GetTranslation("Terminal #"): <span class="fw-bold">
+                            @TerminalDetail.P_PosId
+                        </span>
+                        <i class="fa fa-circle text-danger animation-blink ms-2" id="connection-status" role="button" data-bs-toggle="tooltip" data-bs-custom-class="tooltip-inverse" data-bs-placement="bottom" data-bs-original-title="Pos Server Connection Lost"></i>
                     </div>
                 </div>
             </div>
@@ -194,6 +197,8 @@
     <audio id="error-beep" src="~/assets/beep/error-beep.wav" preload="auto"></audio>
     <partial name="_ScriptImport" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/page/connection.js" asp-append-version="true"></script>
     <script src="~/js/page/sales.js" asp-append-version="true"></script>
     <!--end::Javascript-->
 </body>

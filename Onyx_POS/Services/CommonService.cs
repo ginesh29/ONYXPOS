@@ -8,6 +8,35 @@ namespace Onyx_POS.Services
     public class CommonService(AppDbContext context)
     {
         private readonly AppDbContext _context = context;
+        public string GetRemoteServerName()
+        {
+            var query = "select Server from PosCtrlConsolidation";
+            using var connection = _context.CreateConnection();
+            var data = connection.QueryFirstOrDefault<string>(query);
+            return data;
+        }
+        public string GetRemoteConnectionString()
+        {
+            var ServerName = GetRemoteServerName();
+            string UserId = "absluser";
+            string Password = "0c4gn2zn";
+            string dbName = "POSServer";
+            return $"Server={ServerName};Initial catalog={dbName};uid={UserId}; pwd={Password};TrustServerCertificate=True;Connection Timeout=120;";
+        }
+        public bool IsRemoteServerConnected()
+        {
+            try
+            {
+                var _remoteConnectionString = GetRemoteConnectionString();
+                using var connection = new SqlConnection(_remoteConnectionString);
+                connection.Open();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
         public PosCtrlModel GetCuurentPosCtrl()
         {
             var query = "select * from PosCtrl";
@@ -45,7 +74,8 @@ namespace Onyx_POS.Services
         public int GetCurrentTransactionNoRemote()
         {
             var query = "select COALESCE(MAX(TrnNo), 1)[TrnNo] from PosTransHead";
-            using var connection = _context.CreateRemoteConnection();
+            var _remoteConnectionString = GetRemoteConnectionString();
+            var connection = new SqlConnection(_remoteConnectionString);
             var result = connection.QueryFirstOrDefault<int>(query);
             return result;
         }

@@ -7,16 +7,15 @@ namespace Onyx_POS.Data
     {
         private readonly IConfiguration _configuration;
         private readonly string _connectionString;
-        private readonly string _connectionStringRemote;
         public AppDbContext(IConfiguration configuration)
         {
             _configuration = configuration;
             string UserId = "absluser";
             string Password = "0c4gn2zn";
-            _connectionString = string.Format(_configuration.GetConnectionString("POSDb"), UserId, Password);
-            _connectionStringRemote = string.Format(_configuration.GetConnectionString("POSServerDb"), UserId, Password);
+            string dbName = "POS";
+            string ServerName = _configuration.GetConnectionString("ServerName");
+            _connectionString = $"Server={ServerName};Initial catalog={dbName};uid={UserId}; pwd={Password};TrustServerCertificate=True;Connection Timeout=120;";
         }
         public IDbConnection CreateConnection() => new SqlConnection(_connectionString);
-        public IDbConnection CreateRemoteConnection() => new SqlConnection(_connectionStringRemote);
     }
 }

@@ -1,12 +1,12 @@
 using ElectronNET.API;
 using ElectronNET.API.Entities;
-using MathNet.Numerics;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Onyx_POS;
 using Onyx_POS.Data;
-using Onyx_POS.Middleware;
 using Onyx_POS.Services;
+using Onyx_POS.SignalR;
 using System.Globalization;
 internal class Program
 {
@@ -20,6 +20,7 @@ internal class Program
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<CommonService>();
         builder.Services.AddSingleton<SalesService>();
+        builder.Services.AddHostedService<DatabaseService>();
         builder.Services.AddSingleton<LogService>();
         // Add services to the container.
         builder.Services.AddControllersWithViews()
@@ -44,6 +45,7 @@ internal class Program
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
         builder.WebHost.UseElectron(args);
         builder.Services.AddElectron();
+        builder.Services.AddSignalR();
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -74,6 +76,7 @@ internal class Program
 
         if (HybridSupport.IsElectronActive)
             CreateElectronWindow();
+        app.MapHub<ConnectionStatusHub>("/connectionStatusHub");
         app.Run();
 
         static async void CreateElectronWindow()
