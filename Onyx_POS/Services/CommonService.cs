@@ -23,20 +23,6 @@ namespace Onyx_POS.Services
             string dbName = "POSServer";
             return $"Server={ServerName};Initial catalog={dbName};uid={UserId}; pwd={Password};TrustServerCertificate=True;Connection Timeout=120;";
         }
-        public bool IsRemoteServerConnected()
-        {
-            try
-            {
-                var _remoteConnectionString = GetRemoteConnectionString();
-                using var connection = new SqlConnection(_remoteConnectionString);
-                connection.Open();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
         public PosCtrlModel GetCuurentPosCtrl()
         {
             var query = "select * from PosCtrl";
@@ -51,46 +37,63 @@ namespace Onyx_POS.Services
             var data = connection.QueryFirstOrDefault<ShiftModel>(query);
             return data;
         }
-        public bool IsActiveTransaction()
+        public ParameterModel GetParameterByType(string type)
         {
-            var query = "select count(*) from PosTransHead where TrnStatus='NEW'";
+            var query = $"select * from PosParameters where Typ = '{type}'";
+            using var connection = _context.CreateConnection();
+            var data = connection.QueryFirstOrDefault<ParameterModel>(query);
+            return data;
+        }
+        public bool HasTransaction(bool active = false)
+        {
+            var query = "select count(*) from PosTransHead ";
+            if (active)
+                query += "where TrnStatus = 'NEW'";
             using var connection = _context.CreateConnection();
             var result = connection.QueryFirstOrDefault<int>(query);
             return result > 0;
         }
         public int GetCurrentTransactionNo()
         {
-            var query = "select COALESCE(MAX(TrnNo), 1)[TrnNo] from PosTransHead";
+            var query = "SELECT MAX(TrnNo) AS TrnNo FROM PosTransHead";
             using var connection = _context.CreateConnection();
-            var result = connection.QueryFirstOrDefault<int>(query);
-            return result;
+            var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
+            return maxTrnNo ?? 1;
         }
         public int GetNextTransactionNo()
         {
-            int transNo = GetCurrentTransactionNo();
-            transNo = transNo > 0 ? transNo + 1 : 1;
-            return transNo;
-        }
-        public int GetCurrentTransactionNoRemote()
-        {
-            var query = "select COALESCE(MAX(TrnNo), 1)[TrnNo] from PosTransHead";
-            var _remoteConnectionString = GetRemoteConnectionString();
-            var connection = new SqlConnection(_remoteConnectionString);
-            var result = connection.QueryFirstOrDefault<int>(query);
-            return result;
-        }
-        public int GetNextTransactionNoRemote()
-        {
-            int transNo = GetCurrentTransactionNoRemote();
-            transNo = transNo > 0 ? transNo + 1 : 1;
-            return transNo;
-        }
-        public IEnumerable<ParameterModel> GetParameterByType(string type)
-        {
-            var query = $"select * from PosParameters where Typ in ('{type}')";
+            var query = "SELECT MAX(TrnNo) AS TrnNo FROM PosTransHead";
             using var connection = _context.CreateConnection();
-            var data = connection.Query<ParameterModel>(query);
-            return data;
+            var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
+            return maxTrnNo.HasValue ? maxTrnNo.Value + 1 : 1;
+        }
+        public int GetHoldTransactionNo()
+        {
+            var query = "SELECT MAX(TrnNo) AS TrnNo FROM HoldTranHead";
+            using var connection = _context.CreateConnection();
+            var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
+            return maxTrnNo.HasValue ? maxTrnNo.Value + 1 : 1;
+        }
+        public int GetHoldTransactionNoRemote()
+        {
+            var query = "SELECT MAX(TrnNo) AS TrnNo FROM HoldTranHead";
+            string _remoteConnectionString = GetRemoteConnectionString();
+            var connection = new SqlConnection(_remoteConnectionString);
+            var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
+            return maxTrnNo.HasValue ? maxTrnNo.Value + 1 : 1;
+        }
+        public string GetBillRefNo(int transNo)
+        {
+            var _posDetail = GetCuurentPosCtrl();
+            var dateTime = DateTime.Now.ToString("ddMMyyHHmm");
+            string posId = _posDetail.P_PosId.ToString("D2");
+            string billNo = Convert.ToString(transNo).PadLeft(11, '0');
+            return $"B{_posDetail.P_LocId.Trim()}{posId}{dateTime}{billNo}";
+        }
+        public string GetHoldRefNo(int transNo)
+        {
+            string billNo = Convert.ToString(transNo).PadLeft(10, '0');
+            return $"HB{billNo}";
         }
         public void GenerateModifiedSp(bool singleFile = true)
         {
@@ -129,6 +132,5 @@ namespace Onyx_POS.Services
                 File.WriteAllText(filePath, result);
             }
         }
-
     }
 }

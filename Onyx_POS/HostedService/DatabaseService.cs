@@ -3,7 +3,7 @@ using Onyx_POS.Services;
 using Onyx_POS.SignalR;
 using System.Data.SqlClient;
 
-namespace Onyx_POS
+namespace Onyx_POS.HostedService
 {
     public class DatabaseService(IHubContext<ConnectionStatusHub> hubContext, CommonService commonService) : BackgroundService
     {

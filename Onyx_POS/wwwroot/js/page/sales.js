@@ -124,29 +124,29 @@ function addSaleItem(barcode) {
     postAjax(`/Sales/AddItem`, frmData, function (response) {
         if (response.success) {
             playBeep();
-            showToastr(response.message);
+            showSuccessToastr(response.message);
             loadOrderItems();
-            closeModal("PriceCheckModal");
+            if (modalType != "General")
+                closeModal("PriceCheckModal");
         }
         else
             showErrorAlert("Please scan Again", response.message);
     })
 }
-function holdBill(e, transNo) {
+function holdBill(e) {
     var authType = e.dataset.authType;
     var allowedAuth = false;
     checkAuth(authType, function (response) {
         allowedAuth = response.data.allowed;
         if (allowedAuth || authType == "allowed") {
-
             var table = document.getElementById("order-item-content");
             var items = table.rows.length;
             if (items > 1) {
                 var frmData = new FormData();
-                frmData.append("holdCentralBill", holdCentralBill == "Y");
                 postAjax("/Sales/HoldBill", frmData, function (response) {
-                    showToastr(response.message);
+                    showSuccessToastr(response.message);
                     loadOrderItems();
+                    incrementTransNo();
                 });
             }
             else
@@ -181,8 +181,9 @@ function cancelBill(e, transNo) {
                     var frmData = new FormData();
                     frmData.append("transNo", transNo);
                     postAjax("/Sales/CancelBill", frmData, function (response) {
-                        showToastr(response.message);
+                        showSuccessToastr(response.message);
                         loadOrderItems();
+                        incrementTransNo();
                     });
                 });
             else
@@ -225,4 +226,9 @@ function checkAuth(authType, callback) {
     getAjax(`/Sales/CheckAuth?key=${authType}`, function (response) {
         callback(response);
     });
+}
+function incrementTransNo() {
+    var el = document.getElementById("bill-number");
+    var transNo = el.textContent;
+    el.textContent = Number(transNo) + 1;
 }

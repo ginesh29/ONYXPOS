@@ -28,18 +28,22 @@ function unloadingButton(btn) {
         btn.disabled = false;
     }, 1000);
 }
-function showToastr(msg, type) {
-    type = type ? type : "success";
-    var html = `<div id="toastr-container" class="toastr-top-right">
-                    <div class="toastr toastr-${type}" aria-live="polite" style="">
-                        <div class="toastr-message">${msg}</div>
-                    </div>
-                </div>`
-    document.body.insertAdjacentHTML('afterbegin', html);
-    setTimeout(function () {
-        var toastrContainer = document.getElementById('toastr-container');
-        toastrContainer.style.opacity = 0;
-    }, 3000);
+function showSuccessToastr(msg) {
+    Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        title: msg,  
+        customClass: {
+            popup: 'custom-toastr-success',
+        }
+    });
+}
+function removeToastr() {
+    var toastrContainer = document.getElementById('toastr-container');
+    if (toastrContainer)
+        toastrContainer.parentNode.removeChild(toastrContainer);
 }
 function getAjax(url, callback) {
     fetch(url)

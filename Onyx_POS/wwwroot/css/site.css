@@ -6,6 +6,18 @@ body {
     --bs-primary: #0A60E0;
 }
 
+.custom-toastr-success {
+    background-color: #17C653 !important;
+}
+
+    .custom-toastr-success * {
+        color: #fff !important;
+    }
+
+.custom-swal-icon {
+    color: #fff;
+}
+
 .price-check-items:first-child {
     margin-top: 0 !important;
 }

@@ -10,5 +10,6 @@
         public decimal Amt { get; set; }
         public decimal TotalQty { get; set; }
         public decimal TotalItems { get; set; }
+        public string BillRefNo { get; set; }
     }
 }

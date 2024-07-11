@@ -2,8 +2,8 @@
 {
     public class POSTempItemModel
     {
-        public decimal TrnNo { get; set; }
-        public decimal TrnSlNo { get; set; }
+        public int TrnNo { get; set; }
+        public int TrnSlNo { get; set; }
         public string TrnDept { get; set; }
         public string TrnPlu { get; set; }
         public string TrnType { get; set; }
@@ -34,5 +34,6 @@
         public string TrnParty { get; set; }
         public string TrnFlag { get; set; }
         public string TrnBarcode { get; set; }
+        public string HBillRefNo { get; set; }
     }
 }

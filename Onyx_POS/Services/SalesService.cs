@@ -74,6 +74,27 @@ namespace Onyx_POS.Services
             using var connection = _context.CreateConnection();
             connection.Query(query, parameters);
         }
+        public void UpdatePosTransHead(PosHead model)
+        {
+            DeletePosHead(model.TrnNo, model.PosId);
+            string query = @"insert into PosTransHead(TrnNo,BillRefNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo,TrnTDisc,TrnComment) values (@TrnNo,@BillRefNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo,@TrnTDisc,@TrnComment)";
+            var parameters = new DynamicParameters();
+            parameters.Add("@TrnNo", model.TrnNo);
+            parameters.Add("@BillRefNo", model.BillRefNo);
+            parameters.Add("@PosId", model.PosId);
+            parameters.Add("@TrnUser", model.User);
+            parameters.Add("@TrnShift", model.Shift);
+            parameters.Add("@TrnStatus", model.Status);
+            parameters.Add("@TrnDate", DateTime.Now.ToString("yyyyMMdd"));
+            parameters.Add("@TrnAmt", model.Amt);
+            parameters.Add("@TrnPayNo", 0);
+            parameters.Add("@TrnTotalQty", model.TotalQty);
+            parameters.Add("@TrnTotalItems", model.TotalItems);
+            parameters.Add("@TrnTDisc", 0);
+            parameters.Add("@TrnComment", string.Empty);
+            using var connection = _context.CreateConnection();
+            connection.Query(query, parameters);
+        }
         public void InsertPosTrans(IEnumerable<POSTempItemModel> PosTempItems)
         {
             var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
@@ -92,10 +113,35 @@ namespace Onyx_POS.Services
                 throw new Exception("Error inserting data", ex);
             }
         }
-        public void InsertPosTransRemote(IEnumerable<POSTempItemModel> PosTempItems)
+        public void DeletePosHead(int transNo, int posId)
         {
-            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
-                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
+            string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
+            using var connection = _context.CreateConnection();
+            connection.Query(query);
+        }
+        public void InsertHoldTrans(IEnumerable<POSTempItemModel> PosTempItems)
+        {
+            var query = @"INSERT INTO [dbo].[HoldtranDetail] ([HBillRefNo], [TrnNo], [TrnSlNo], [TrnDt], [TrnDept], [TrnPlu], [TrnQty], [TrnPrice], [TrnUnit], [TrnPackQty], [TrnPrLvl], [TrnLDisc], [TrnTDisc], [TrnLDiscPercent], [TrnTDiscType], [TrnMode], [TrnType], [TrnDeptPlu], [TrnNetVal], [TrnUser], [TrnTime], [TrnErrPlu], [TrnLoc], [TrnPosId], [TrnShift], [TrnAmt], [TrnParty], [TrnSalesman], [TrnDesc], [TrnFlag], [TrnName], [TrnBarcode]) 
+                VALUES (@HBillRefNo, @TrnNo, @TrnSlNo, @TrnDt, @TrnDept, @TrnPlu, @TrnQty, @TrnPrice, @TrnUnit, @TrnPackQty, @TrnPrLvl, @TrnLDisc, @TrnTDisc, @TrnLDiscPercent, @TrnTDiscType, @TrnMode, @TrnType, @TrnDeptPlu, @TrnNetVal, @TrnUser, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnPosId, @TrnShift, @TrnAmt, @TrnParty, @TrnSalesman, @TrnDesc, @TrnFlag, @TrnName, @TrnBarcode)";
+
+            using var connection = _context.CreateConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                connection.Execute(query, PosTempItems, transaction: transaction);
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("Error inserting data", ex);
+            }
+        }
+        public void InsertHoldTransRemote(IEnumerable<POSTempItemModel> PosTempItems)
+        {
+            var query = @"INSERT INTO [dbo].[HoldtranDetail] ([HBillRefNo], [TrnNo], [TrnSlNo], [TrnDt], [TrnDept], [TrnPlu], [TrnQty], [TrnPrice], [TrnUnit], [TrnPackQty], [TrnPrLvl], [TrnLDisc], [TrnTDisc], [TrnLDiscPercent], [TrnTDiscType], [TrnMode], [TrnType], [TrnDeptPlu], [TrnNetVal], [TrnUser], [TrnTime], [TrnErrPlu], [TrnLoc], [TrnPosId], [TrnShift], [TrnAmt], [TrnParty], [TrnSalesman], [TrnDesc], [TrnFlag], [TrnName], [TrnBarcode]) 
+                VALUES (@HBillRefNo, @TrnNo, @TrnSlNo, @TrnDt, @TrnDept, @TrnPlu, @TrnQty, @TrnPrice, @TrnUnit, @TrnPackQty, @TrnPrLvl, @TrnLDisc, @TrnTDisc, @TrnLDiscPercent, @TrnTDiscType, @TrnMode, @TrnType, @TrnDeptPlu, @TrnNetVal, @TrnUser, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnPosId, @TrnShift, @TrnAmt, @TrnParty, @TrnSalesman, @TrnDesc, @TrnFlag, @TrnName, @TrnBarcode)";
 
             var connection = new SqlConnection(_remoteConnectionString);
             connection.Open();
@@ -111,52 +157,69 @@ namespace Onyx_POS.Services
                 throw new Exception("Error inserting data", ex);
             }
         }
-        public void UpdatePosHead(PosHead model)
+        public void UpdateHoldTransHead(HoldTransHead model)
         {
-            DeletePosHead(model.TrnNo, model.PosId);
-            string query = @"insert into PosTransHead(TrnNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo,TrnTDisc,TrnComment) values (@TrnNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo,@TrnTDisc,@TrnComment)";
+            DeleteHoldTransHead(model.TrnNo, model.PosId);
+            string query = @"INSERT INTO [dbo].[HoldtranHead] ([HBillRefNo], [TrnNo], [PosId], [TrnStatus], [TrnDate], [TrnAmt], [TrnTotalQty], [TrnTotalItems], [TrnPayNo], [TrnComment], [TrnUser], [TrnShift], [TrnTDisc], [TrnLoc], [RPosId], [RTrnno], [RTrnUser], [RTrnDate]) 
+                VALUES (@HBillRefNo, @TrnNo, @PosId, @TrnStatus, @TrnDate, @TrnAmt, @TrnTotalQty, @TrnTotalItems, @TrnPayNo, @TrnComment, @TrnUser, @TrnShift, @TrnTDisc, @TrnLoc, @RPosId, @RTrnno, @RTrnUser, @RTrnDate)";
             var parameters = new DynamicParameters();
+            parameters.Add("@HBillRefNo", model.HBillRefNo);
             parameters.Add("@TrnNo", model.TrnNo);
             parameters.Add("@PosId", model.PosId);
-            parameters.Add("@TrnUser", model.User);
-            parameters.Add("@TrnShift", model.Shift);
             parameters.Add("@TrnStatus", model.Status);
-            parameters.Add("@TrnDate", DateTime.Now.ToString("yyyyMMdd"));
+            parameters.Add("@TrnDate", model.TrnDate);
             parameters.Add("@TrnAmt", model.Amt);
-            parameters.Add("@TrnPayNo", 0);
             parameters.Add("@TrnTotalQty", model.TotalQty);
             parameters.Add("@TrnTotalItems", model.TotalItems);
-            parameters.Add("@TrnTDisc", 0);
-            parameters.Add("@TrnComment", string.Empty);
+            parameters.Add("@TrnPayNo", model.TrnPayNo);
+            parameters.Add("@TrnComment", null);
+            parameters.Add("@TrnUser", model.User);
+            parameters.Add("@TrnShift", model.Shift);
+            parameters.Add("@TrnTDisc", model.Discount);
+            parameters.Add("@TrnLoc", model.LocId);
+            parameters.Add("@RPosId", model.RPosId);
+            parameters.Add("@RTrnNo", model.RTrnNo);
+            parameters.Add("@RTrnUser", model.RTrnUser);
+            parameters.Add("@RTrnDate", model.RTrnDate);
             using var connection = _context.CreateConnection();
             connection.Query(query, parameters);
         }
-        public void UpdatePosHeadRemote(PosHead model)
+        public void UpdateHoldTransHeadRemote(HoldTransHead model)
         {
-            string query = @"insert into PosTransHead(TrnNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo) values (@TrnNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo)";
+            DeleteHoldTransHeadRemote(model.TrnNo, model.PosId);
+            string query = @"INSERT INTO [dbo].[HoldtranHead] ([HBillRefNo], [TrnNo], [PosId], [TrnStatus], [TrnDate], [TrnAmt], [TrnTotalQty], [TrnTotalItems], [TrnPayNo], [TrnComment], [TrnUser], [TrnShift], [TrnTDisc], [TrnLoc], [RPosId], [RTrnno], [RTrnUser], [RTrnDate]) 
+                VALUES (@HBillRefNo, @TrnNo, @PosId, @TrnStatus, @TrnDate, @TrnAmt, @TrnTotalQty, @TrnTotalItems, @TrnPayNo, @TrnComment, @TrnUser, @TrnShift, @TrnTDisc, @TrnLoc, @RPosId, @RTrnno, @RTrnUser, @RTrnDate)";
             var parameters = new DynamicParameters();
+            parameters.Add("@HBillRefNo", model.HBillRefNo);
             parameters.Add("@TrnNo", model.TrnNo);
             parameters.Add("@PosId", model.PosId);
-            parameters.Add("@TrnUser", model.User);
-            parameters.Add("@TrnShift", model.Shift);
             parameters.Add("@TrnStatus", model.Status);
-            parameters.Add("@TrnDate", DateTime.Now.ToString("yyyyMMdd"));
+            parameters.Add("@TrnDate", model.TrnDate);
             parameters.Add("@TrnAmt", model.Amt);
-            parameters.Add("@TrnPayNo", 0);
             parameters.Add("@TrnTotalQty", model.TotalQty);
             parameters.Add("@TrnTotalItems", model.TotalItems);
+            parameters.Add("@TrnPayNo", model.TrnPayNo);
+            parameters.Add("@TrnComment", null);
+            parameters.Add("@TrnUser", model.User);
+            parameters.Add("@TrnShift", model.Shift);
+            parameters.Add("@TrnTDisc", model.Discount);
+            parameters.Add("@TrnLoc", model.LocId);
+            parameters.Add("@RPosId", model.RPosId);
+            parameters.Add("@RTrnNo", model.RTrnNo);
+            parameters.Add("@RTrnUser", model.RTrnUser);
+            parameters.Add("@RTrnDate", model.RTrnDate);
             var connection = new SqlConnection(_remoteConnectionString);
             connection.Query(query, parameters);
         }
-        public void DeletePosHead(int transNo, int posId)
+        public void DeleteHoldTransHead(int transNo, int posId)
         {
-            string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
+            string query = $"delete from  HoldtranHead  Where TrnNo = {transNo} and  PosId= {posId}";
             using var connection = _context.CreateConnection();
             connection.Query(query);
         }
-        public void DeletePosHeadRemote(int transNo, int posId)
+        public void DeleteHoldTransHeadRemote(int transNo, int posId)
         {
-            string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
+            string query = $"delete from  HoldtranHead  Where TrnNo = {transNo} and  PosId= {posId}";
             var connection = new SqlConnection(_remoteConnectionString);
             connection.Query(query);
         }
