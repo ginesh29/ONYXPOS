@@ -90,10 +90,11 @@ namespace Onyx_POS.Services
             string billNo = Convert.ToString(transNo).PadLeft(11, '0');
             return $"B{_posDetail.P_LocId.Trim()}{posId}{dateTime}{billNo}";
         }
-        public string GetHoldRefNo(int transNo)
+        public string GetHoldCancelledRefNo(int transNo, string type)
         {
             string billNo = Convert.ToString(transNo).PadLeft(10, '0');
-            return $"HB{billNo}";
+            string prefix = type == "Hold" ? "HB" : "CB";
+            return $"{prefix}{billNo}";
         }
         public void GenerateModifiedSp(bool singleFile = true)
         {

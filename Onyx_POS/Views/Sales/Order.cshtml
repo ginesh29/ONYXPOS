@@ -7,6 +7,7 @@
     bool isElectronApp = HybridSupport.IsElectronActive;
     ViewData["NumpadFor"] = "General";
     var transNo = ViewBag.TransactionNo;
+    var qtyVoidEnabled = _commonService.GetParameterByType("QTY_VOID_ENABLED")?.Val;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -21,6 +22,7 @@
 </head>
 <!--end::Head-->
 <body>
+    <input type="hidden" value="@qtyVoidEnabled" id="QtyVoidEnabled" />
     <nav class="navbar navbar-dark bg-primary shadow">
         <div class="container-fluid">
             <div class="d-flex mr-auto">

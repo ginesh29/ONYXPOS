@@ -82,6 +82,11 @@ function showQtyModal(e, modalType) {
                     document.getElementById("PriceCheckModalDialog").style.maxWidth = "600px";
                     document.getElementById("left-container").classList.remove("col-md-6");
                     document.getElementById("left-container").classList.add("col-md-12");
+                    if (items > 1 || modalType == "Void") {
+                        var qtyVoidEnabled = document.getElementById("QtyVoidEnabled").value;
+                        if (qtyVoidEnabled == 1)
+                            document.getElementById("Qty").closest('.form-group').parentElement.classList.remove('d-none');
+                    }
                     if (items > 1 || modalType == "Refund") {
                         document.getElementById("Qty").value = -1;
                         showModal("PriceCheckModal");

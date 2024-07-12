@@ -100,16 +100,16 @@ namespace Onyx_POS.Controllers
             bool holdCentralBill = _commonService.GetParameterByType("HOLDCENTRALBILL").Val == "Y";
             int transNo = _commonService.GetCurrentTransactionNo();
             int holdTransNo = holdCentralBill ? _commonService.GetHoldTransactionNoRemote() : _commonService.GetHoldTransactionNo();
-            var posTempItems = _salesService.GetPosTempItems().Where(m => m.TrnNo == transNo).Select(m =>
+            var posTempItems = _salesService.GetPosTempItems().Select(m =>
             {
                 m.TrnNo = holdTransNo;
-                m.HBillRefNo = _commonService.GetHoldRefNo(transNo);
+                m.HBillRefNo = _commonService.GetHoldCancelledRefNo(transNo, TransStatus.Hold.GetDisplayName());
                 return m;
             });
             var holdTransHead = new HoldTransHead
             {
                 TrnNo = holdTransNo,
-                HBillRefNo = _commonService.GetHoldRefNo(transNo),
+                HBillRefNo = _commonService.GetHoldCancelledRefNo(transNo, TransStatus.Hold.GetDisplayName()),
                 PosId = _posDetail.P_PosId,
                 User = _loggedInUser.U_Code,
                 Shift = _shiftDetail.ShiftNo,
@@ -134,7 +134,7 @@ namespace Onyx_POS.Controllers
             var posHead = new PosHead
             {
                 TrnNo = transNo,
-                BillRefNo = _commonService.GetBillRefNo(transNo),
+                BillRefNo = _commonService.GetHoldCancelledRefNo(transNo, TransStatus.Hold.GetDisplayName()),
                 PosId = _posDetail.P_PosId,
                 User = _loggedInUser.U_Code,
                 Shift = _shiftDetail.ShiftNo,
@@ -156,19 +156,19 @@ namespace Onyx_POS.Controllers
         [HttpPost]
         public IActionResult CancelBill(int transNo)
         {
-            var PosTempItems = _salesService.GetPosTempItems().Where(m => m.TrnNo == transNo).Select(m => { m.TrnMode = TransMode.Cancelled.GetDisplayName(); return m; });
-
-            _salesService.InsertPosTrans(PosTempItems);
+            var posTempItems = _salesService.GetPosTempItems().Where(m => m.TrnNo == transNo).Select(m => { m.TrnMode = TransMode.Cancelled.GetDisplayName(); return m; });
+            _salesService.InsertPosTrans(posTempItems);
             var posHead = new PosHead
             {
                 TrnNo = transNo,
+                BillRefNo = _commonService.GetHoldCancelledRefNo(transNo, TransStatus.Cancelled.GetDisplayName()),
                 PosId = _posDetail.P_PosId,
                 User = _loggedInUser.U_Code,
                 Shift = _shiftDetail.ShiftNo,
                 Status = TransStatus.Cancelled.GetDisplayName(),
-                Amt = PosTempItems.Sum(m => m.TrnPrice * m.TrnQty),
-                TotalQty = PosTempItems.Sum(m => m.TrnQty),
-                TotalItems = PosTempItems.Count()
+                Amt = posTempItems.Sum(m => m.TrnPrice * m.TrnQty),
+                TotalQty = posTempItems.Sum(m => m.TrnQty),
+                TotalItems = posTempItems.Count()
             };
             _salesService.UpdatePosTransHead(posHead);
             _salesService.ClearPosTempItems(transNo);

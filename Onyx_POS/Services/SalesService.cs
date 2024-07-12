@@ -76,7 +76,7 @@ namespace Onyx_POS.Services
         }
         public void UpdatePosTransHead(PosHead model)
         {
-            DeletePosHead(model.TrnNo, model.PosId);
+            DeletePosTransHead(model.TrnNo, model.PosId);
             string query = @"insert into PosTransHead(TrnNo,BillRefNo,PosId,TrnUser,TrnShift,TrnStatus,TrnDate,TrnAmt,TrnTotalQty,TrnTotalItems,TrnPayNo,TrnTDisc,TrnComment) values (@TrnNo,@BillRefNo,@PosId,@TrnUser,@TrnShift,@TrnStatus,@TrnDate,@TrnAmt,@TrnTotalQty,@TrnTotalItems,@TrnPayNo,@TrnTDisc,@TrnComment)";
             var parameters = new DynamicParameters();
             parameters.Add("@TrnNo", model.TrnNo);
@@ -113,7 +113,7 @@ namespace Onyx_POS.Services
                 throw new Exception("Error inserting data", ex);
             }
         }
-        public void DeletePosHead(int transNo, int posId)
+        public void DeletePosTransHead(int transNo, int posId)
         {
             string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
             using var connection = _context.CreateConnection();
