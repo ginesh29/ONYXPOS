@@ -1,0 +1,58 @@
+CREATE TABLE [dbo].[HoldtranHead](
+	[HBillRefNo] [char](12) NOT NULL,
+	[TrnNo] [numeric](9, 0) NOT NULL,
+	[PosId] [numeric](9, 0) NULL,
+	[TrnStatus] [varchar](50) NULL,
+	[TrnDate] [datetime] NULL,
+	[TrnAmt] [numeric](15, 4) NULL,
+	[TrnTotalQty] [numeric](9, 0) NULL,
+	[TrnTotalItems] [numeric](9, 0) NULL,
+	[TrnPayNo] [numeric](9, 0) NULL,
+	[TrnComment] [varchar](max) NULL,
+	[TrnUser] [nvarchar](10) NULL,
+	[TrnShift] [nvarchar](50) NULL,
+	[TrnTDisc] [numeric](18, 2) NULL,
+	[TrnLoc] [char](5) NULL,
+	[RPosId] [numeric](9, 0) NULL,
+	[RTrnno] [numeric](9, 0) NULL,
+	[RTrnUser] [nvarchar](10) NULL,
+	[RTrnDate] [datetime] NULL) ON [PRIMARY]
+GO
+
+
+CREATE TABLE [dbo].[HoldtranDetail](
+	[HBillRefNo] [char](12) NOT NULL,
+	[TrnNo] [numeric](9, 0) NOT NULL,
+	[TrnSlNo] [numeric](5, 0) NOT NULL,
+	[TrnDt] [datetime] NULL,
+	[TrnDept] [char](5) NULL,
+	[TrnPlu] [char](18) NULL,
+	[TrnQty] [numeric](15, 3) NULL,
+	[TrnPrice] [numeric](15, 4) NULL,
+	[TrnUnit] [char](6) NULL,
+	[TrnPackQty] [numeric](9, 0) NULL,
+	[TrnPrLvl] [char](1) NULL,
+	[TrnLDisc] [numeric](15, 4) NULL,
+	[TrnTDisc] [numeric](15, 4) NULL,
+	[TrnLDiscPercent] [numeric](15, 4) NULL,
+	[TrnTDiscType] [char](1) NULL,
+	[TrnMode] [char](2) NULL,
+	[TrnType] [char](2) NULL,
+	[TrnDeptPlu] [char](1) NULL,
+	[TrnNetVal] [numeric](15, 4) NULL,
+	[TrnUser] [nvarchar](10) NULL,
+	[TrnTime] [char](5) NULL,
+	[TrnErrPlu] [char](1) NULL,
+	[TrnLoc] [char](3) NULL,
+	[TrnPosId] [numeric](3, 0) NULL,
+	[TrnShift] [numeric](3, 0) NULL,
+	[TrnAmt] [numeric](15, 4) NULL,
+	[TrnParty] [char](10) NULL,
+	[TrnSalesman] [char](5) NULL,
+	[TrnDesc] [varchar](50) NULL,
+	[TrnFlag] [char](1) NULL,
+	[TrnName] [varchar](50) NULL,
+	[TrnBarcode] [varchar](18) NULL) ON [PRIMARY]
+GO
+
+ALTER TABLE PosTransHead ADD BillRefNo varchar(28);
