@@ -27,6 +27,8 @@ namespace Onyx_POS
         [Display(Name = "HOLD")]
         Hold,
         [Display(Name = "CANCELLED")]
-        Cancelled
+        Cancelled,
+        [Display(Name = "RECALLED")]
+        Recalled
     }
 }

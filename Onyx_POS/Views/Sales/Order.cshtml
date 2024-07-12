@@ -167,7 +167,7 @@
                             Cashdrawer
                             </button> *@
 
-                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" onclick="recallBill(this)" data-auth-type="RECALLBILL_AUTHORIZED">
+                            <button class="btn btn-primary fw-normal p-3 mb-2 w-100" style="font-size:xx-small" onclick="showHoldTransactionsModal(this)" data-auth-type="RECALLBILL_AUTHORIZED">
                                 <div class="mb-1">
                                     <img src="~/assets/media/sales/recall.svg" class="menu-svg-icon h-15px" />
                                 </div>
@@ -192,6 +192,7 @@
         </div>
     </div>
     <partial name="_PriceCheckModal" />
+    <div class="modal fade" tabindex="-1" id="HoldTransactionsModal" data-bs-backdrop="static" data-bs-keyboard="false"></div>
     <!--begin::Javascript-->
     <audio id="beep" src="~/assets/beep/beep.wav" preload="auto"></audio>
     <audio id="error-beep" src="~/assets/beep/error-beep.wav" preload="auto"></audio>

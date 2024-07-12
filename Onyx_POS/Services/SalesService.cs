@@ -95,31 +95,31 @@ namespace Onyx_POS.Services
             using var connection = _context.CreateConnection();
             connection.Query(query, parameters);
         }
-        public void InsertPosTrans(IEnumerable<POSTempItemModel> PosTempItems)
-        {
-            var query = @"INSERT INTO [dbo].[PosTrans] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
-                            VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
-            using var connection = _context.CreateConnection();
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-            try
-            {
-                connection.Execute(query, PosTempItems, transaction: transaction);
-                transaction.Commit();
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                throw new Exception("Error inserting data", ex);
-            }
-        }
+        //public void InsertPosTrans(IEnumerable<POSTempItemModel> posTempItems)
+        //{
+        //    var query = @"INSERT INTO [dbo].[PosTemp] (TrnNo, TrnSlNo, TrnDept, TrnPlu, TrnType, TrnMode, TrnUser, TrnDt, TrnTime, TrnErrPlu, TrnLoc, TrnDeptPlu, TrnQty, TrnUnit, TrnPackQty, TrnPrice, TrnPrLvl, TrnLDisc, TrnLDiscPercent, TrnTDisc,TrnTDiscType, TrnPosId, TrnShift, TrnNetVal, TrnName, TrnDesc, TrnAmt, TrnSalesman, TrnParty, TrnFlag, TrnBarcode)
+        //                    VALUES (@TrnNo, @TrnSlNo, @TrnDept, @TrnPlu, @TrnType, @TrnMode, @TrnUser, @TrnDt, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnDeptPlu, @TrnQty, @TrnUnit, @TrnPackQty, @TrnPrice, @TrnPrLvl, @TrnLDisc, @TrnLDiscPercent, @TrnTDisc,@TrnTDiscType, @TrnPosId, @TrnShift, @TrnNetVal, @TrnName, @TrnDesc, @TrnAmt, @TrnSalesman, @TrnParty, @TrnFlag, @TrnBarcode)";
+        //    using var connection = _context.CreateConnection();
+        //    connection.Open();
+        //    using var transaction = connection.BeginTransaction();
+        //    try
+        //    {
+        //        connection.Execute(query, posTempItems, transaction: transaction);
+        //        transaction.Commit();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        transaction.Rollback();
+        //        throw new Exception("Error inserting data", ex);
+        //    }
+        //}
         public void DeletePosTransHead(int transNo, int posId)
         {
             string query = $"delete from  PosTransHead  Where TrnNo = {transNo} and  PosId= {posId}";
             using var connection = _context.CreateConnection();
             connection.Query(query);
         }
-        public void InsertHoldTrans(IEnumerable<POSTempItemModel> PosTempItems)
+        public void InsertHoldTrans(IEnumerable<POSTempItemModel> posTempItems)
         {
             var query = @"INSERT INTO [dbo].[HoldtranDetail] ([HBillRefNo], [TrnNo], [TrnSlNo], [TrnDt], [TrnDept], [TrnPlu], [TrnQty], [TrnPrice], [TrnUnit], [TrnPackQty], [TrnPrLvl], [TrnLDisc], [TrnTDisc], [TrnLDiscPercent], [TrnTDiscType], [TrnMode], [TrnType], [TrnDeptPlu], [TrnNetVal], [TrnUser], [TrnTime], [TrnErrPlu], [TrnLoc], [TrnPosId], [TrnShift], [TrnAmt], [TrnParty], [TrnSalesman], [TrnDesc], [TrnFlag], [TrnName], [TrnBarcode]) 
                 VALUES (@HBillRefNo, @TrnNo, @TrnSlNo, @TrnDt, @TrnDept, @TrnPlu, @TrnQty, @TrnPrice, @TrnUnit, @TrnPackQty, @TrnPrLvl, @TrnLDisc, @TrnTDisc, @TrnLDiscPercent, @TrnTDiscType, @TrnMode, @TrnType, @TrnDeptPlu, @TrnNetVal, @TrnUser, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnPosId, @TrnShift, @TrnAmt, @TrnParty, @TrnSalesman, @TrnDesc, @TrnFlag, @TrnName, @TrnBarcode)";
@@ -129,7 +129,7 @@ namespace Onyx_POS.Services
             using var transaction = connection.BeginTransaction();
             try
             {
-                connection.Execute(query, PosTempItems, transaction: transaction);
+                connection.Execute(query, posTempItems, transaction: transaction);
                 transaction.Commit();
             }
             catch (Exception ex)
@@ -138,7 +138,7 @@ namespace Onyx_POS.Services
                 throw new Exception("Error inserting data", ex);
             }
         }
-        public void InsertHoldTransRemote(IEnumerable<POSTempItemModel> PosTempItems)
+        public void InsertHoldTransRemote(IEnumerable<POSTempItemModel> posTempItems)
         {
             var query = @"INSERT INTO [dbo].[HoldtranDetail] ([HBillRefNo], [TrnNo], [TrnSlNo], [TrnDt], [TrnDept], [TrnPlu], [TrnQty], [TrnPrice], [TrnUnit], [TrnPackQty], [TrnPrLvl], [TrnLDisc], [TrnTDisc], [TrnLDiscPercent], [TrnTDiscType], [TrnMode], [TrnType], [TrnDeptPlu], [TrnNetVal], [TrnUser], [TrnTime], [TrnErrPlu], [TrnLoc], [TrnPosId], [TrnShift], [TrnAmt], [TrnParty], [TrnSalesman], [TrnDesc], [TrnFlag], [TrnName], [TrnBarcode]) 
                 VALUES (@HBillRefNo, @TrnNo, @TrnSlNo, @TrnDt, @TrnDept, @TrnPlu, @TrnQty, @TrnPrice, @TrnUnit, @TrnPackQty, @TrnPrLvl, @TrnLDisc, @TrnTDisc, @TrnLDiscPercent, @TrnTDiscType, @TrnMode, @TrnType, @TrnDeptPlu, @TrnNetVal, @TrnUser, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnPosId, @TrnShift, @TrnAmt, @TrnParty, @TrnSalesman, @TrnDesc, @TrnFlag, @TrnName, @TrnBarcode)";
@@ -148,7 +148,7 @@ namespace Onyx_POS.Services
             using var transaction = connection.BeginTransaction();
             try
             {
-                connection.Execute(query, PosTempItems, transaction: transaction);
+                connection.Execute(query, posTempItems, transaction: transaction);
                 transaction.Commit();
             }
             catch (Exception ex)
@@ -222,6 +222,53 @@ namespace Onyx_POS.Services
             string query = $"delete from  HoldtranHead  Where TrnNo = {transNo} and  PosId= {posId}";
             var connection = new SqlConnection(_remoteConnectionString);
             connection.Query(query);
+        }
+
+        public IEnumerable<HoldTransHeadViewModel> GetHoldTransHeads()
+        {
+            var query = "select * FROM HoldTranHead where TrnStatus='Hold'";
+            using var connection = _context.CreateConnection();
+            var data = connection.Query<HoldTransHeadViewModel>(query);
+            return data;
+        }
+        public IEnumerable<HoldTransHeadViewModel> GetHoldTransHeadsRemote()
+        {
+            var query = "select * FROM HoldTranHead where TrnStatus='Hold'";
+            var connection = new SqlConnection(_remoteConnectionString);
+            var data = connection.Query<HoldTransHeadViewModel>(query);
+            return data;
+        }
+        public IEnumerable<POSTempItemModel> GetHoldTransDetails(int transNo)
+        {
+            var query = $"select * FROM HoldTranDetail where TrnNo = {transNo}";
+            using var connection = _context.CreateConnection();
+            var data = connection.Query<POSTempItemModel>(query);
+            return data;
+        }
+        public IEnumerable<POSTempItemModel> GetHoldTransDetailsRemote(int transNo)
+        {
+            var query = $"select * FROM HoldTranDetail where TrnNo = {transNo}";
+            var connection = new SqlConnection(_remoteConnectionString);
+            var data = connection.Query<POSTempItemModel>(query);
+            return data;
+        }
+        public void InsertPosTempItems(IEnumerable<POSTempItemModel> posTempItems)
+        {
+            string query = @"insert into PosTemp     (TrnNo,TrnSlNo,TrnDt,TrnDept,TrnPlu,TrnQty,TrnPrice,TrnTDisc,TrnUnit,TrnPackQty,TrnName,TrnNetVal,TrnTDiscType,TrnMode,TrnBarcode,TrnUser,TrnShift,TrnAmt,TrnLoc,TrnPosId,TrnSalesman,TrnPrLvl,TrnType,TrnErrPlu,TrnParty,TrnTime)
+           values(@TrnNo,@TrnSlNo,@TrnDt,@TrnDept,@TrnPlu,@TrnQty,@TrnPrice,0,@TrnUnit,@TrnPackQty,@TrnName,@TrnNetVal,@TrnTDiscType,@TrnMode,@TrnBarcode,@TrnUser,@TrnShift,@TrnAmt,@TrnLoc,@TrnPosId,@TrnSalesman,'1',@TrnType,'Y','CASH',@TrnTime)";
+            using var connection = _context.CreateConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+            try
+            {
+                connection.Execute(query, posTempItems, transaction: transaction);
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw new Exception("Error inserting data", ex);
+            }
         }
     }
 }

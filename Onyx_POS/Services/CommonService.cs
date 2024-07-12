@@ -93,7 +93,7 @@ namespace Onyx_POS.Services
         public string GetHoldCancelledRefNo(int transNo, string type)
         {
             string billNo = Convert.ToString(transNo).PadLeft(10, '0');
-            string prefix = type == "Hold" ? "HB" : "CB";
+            string prefix = type == "HOLD" ? "HB" : "CB";
             return $"{prefix}{billNo}";
         }
         public void GenerateModifiedSp(bool singleFile = true)

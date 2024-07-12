@@ -82,15 +82,14 @@ function showQtyModal(e, modalType) {
                     document.getElementById("PriceCheckModalDialog").style.maxWidth = "600px";
                     document.getElementById("left-container").classList.remove("col-md-6");
                     document.getElementById("left-container").classList.add("col-md-12");
+                    document.getElementById("Qty").value = 1;
                     if (items > 1 || modalType == "Void") {
                         var qtyVoidEnabled = document.getElementById("QtyVoidEnabled").value;
-                        if (qtyVoidEnabled == 1)
+                        if (qtyVoidEnabled == "Y")
                             document.getElementById("Qty").closest('.form-group').parentElement.classList.remove('d-none');
                     }
-                    if (items > 1 || modalType == "Refund") {
-                        document.getElementById("Qty").value = -1;
+                    if (items > 1 || modalType == "Refund")
                         showModal("PriceCheckModal");
-                    }
                     else
                         showErrorAlert("No Items to void");
                 }
@@ -123,6 +122,7 @@ function addSaleItem(barcode) {
     var frmData = new FormData();
     var qty = document.getElementById("Qty").value;
     var modalType = document.getElementById("PriceCheckModalType").value;
+    qty = modalType == "Void" || modalType == "Refund" ? (qty * -1) : qty;
     frmData.append("barcode", barcode);
     frmData.append("qty", qty);
     frmData.append("type", modalType);
@@ -134,8 +134,10 @@ function addSaleItem(barcode) {
             if (modalType != "General")
                 closeModal("PriceCheckModal");
         }
-        else
-            showErrorAlert("Please scan Again", response.message);
+        else {
+            var msg = response.message.includes("exceeded") ? "Not allowed" : "Please scan Again";
+            showErrorAlert(msg, response.message);
+        }
     })
 }
 function holdBill(e) {
@@ -161,16 +163,15 @@ function holdBill(e) {
             alert(allowedAuth);
     })
 }
-function recallBill(e) {
-    var authType = e.dataset.authType;
-    var allowedAuth = false;
-    checkAuth(authType, function (response) {
-        allowedAuth = response.data.allowed;
-        if (allowedAuth || authType == "allowed") {
-        }
-        else
-            alert(allowedAuth);
-    })
+function recallBill(transNo) {
+    var frmData = new FormData();
+    frmData.append("transNo", transNo);
+    postAjax("/Sales/RecallBill", frmData, function (response) {
+        showSuccessToastr(response.message);
+        loadOrderItems();
+        incrementTransNo();
+        closeModal("HoldTransactionsModal");
+    });
 }
 function cancelBill(e, transNo) {
     var authType = e.dataset.authType;
@@ -178,7 +179,6 @@ function cancelBill(e, transNo) {
     checkAuth(authType, function (response) {
         allowedAuth = response.data.allowed;
         if (allowedAuth || authType == "allowed") {
-
             var table = document.getElementById("order-item-content");
             var items = table.rows.length;
             if (items > 1)
@@ -236,4 +236,26 @@ function incrementTransNo() {
     var el = document.getElementById("bill-number");
     var transNo = el.textContent;
     el.textContent = Number(transNo) + 1;
+}
+function showHoldTransactionsModal(e) {
+    var authType = e.dataset.authType;
+    var allowedAuth = false;
+    checkAuth(authType, function (response) {
+        allowedAuth = response.data.allowed;
+        if (allowedAuth || authType == "allowed") {
+            loadAjax("/Sales/HoldTransactions", function (response) {
+                var modalId = "HoldTransactionsModal";
+                document.getElementById(modalId).innerHTML = response;
+                showModal(modalId);
+            });
+        }
+        else
+            alert(allowedAuth);
+    })
+}
+function loadRecallItemBill(transNo) {
+    loadAjax(`/Sales/FetchRecallItemBill?transNo=${transNo}`, function (response) {
+        document.getElementById(`bill-${transNo}`).innerHTML = response;
+        document.getElementById(`bill-${transNo}`).classList.remove("d-none");
+    });
 }

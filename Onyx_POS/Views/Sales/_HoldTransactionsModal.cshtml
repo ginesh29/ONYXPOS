@@ -1,0 +1,65 @@
+﻿@model IEnumerable<HoldTransHeadViewModel>
+@{
+    var posDetail = _commonService.GetCuurentPosCtrl();
+    var DecimalFormat = ExtensionMethod.GetDecimalFormat(Convert.ToInt32(posDetail.P_Decimals));
+}
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Recall Transaction</h3>
+        </div>
+        <div class="modal-body">
+
+            <table class="table-row-bordered table-hover ps-2 table" id="hold-transactions-table">
+                <thead class="sticky-table-header bg-light-primary">
+                    <tr class="fw-semibold text-primary">
+                        <th>#</th>
+                        <th>Trans No</th>
+                        <th>Pos Id</th>
+                        <th>No. of Items</th>
+                        <th>Amount</th>
+                        <th>Trn. Date</th>
+                        <th>UserId</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Select((value, index) => new { value, index }))
+                    {
+                        <tr>
+                            <td>@(item.index + 1)</td>
+                            <td>@item.value.TrnNo</td>
+                            <td>@item.value.PosId</td>
+                            <td>@item.value.TrnTotalItems</td>
+                            <td>@item.value.TrnAmt.ToString(DecimalFormat)</td>
+                            <td>@item.value.TrnDate</td>
+                            <td>@item.value.TrnUser</td>
+                            <td>
+                                <button class="btn btn-sm btn-icon btn-primary mx-2">
+                                    <i class="fas fa-eye" role="button" onclick="loadRecallItemBill('@item.value.TrnNo')"></i>
+                                </button>
+                                <button class="btn btn-sm btn-icon btn-primary" onclick="recallBill('@item.value.TrnNo')">
+                                    <i class="fas fa-undo" role="button"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="d-none" colspan="8" id="bill-@item.value.TrnNo"></td>
+                        </tr>
+                    }
+                </tbody>
+                @if (Model.Count() == 0)
+                {
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">No record found</td>
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline btn-outline-solid btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+    </div>
+</div>
