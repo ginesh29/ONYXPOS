@@ -1,24 +1,4 @@
-﻿function validateForm() {
-    var userId = document.getElementById('UserId').value;
-    var password = document.getElementById('Password').value;
-
-    var userIdError = document.querySelector('[data-valmsg-for="UserId"]');
-    var passwordError = document.querySelector('[data-valmsg-for="Password"]');
-    userIdError.textContent = "";
-    passwordError.textContent = "";
-    var isValid = true;
-    if (!userId) {
-        userIdError.textContent = "Please enter User Id";
-        isValid = false;
-    }
-    if (!password) {
-        passwordError.textContent = "Please enter Password";
-        isValid = false;
-    }
-    return isValid;
-}
-
-function showHidePasswordAsterisk(id, curEl) {
+﻿function showHidePasswordAsterisk(id, curEl) {
     var x = document.getElementById(id);
     var eyeIcon = curEl.parentNode.querySelector(".eye-icon");
     if (x.type === "password") {
@@ -41,7 +21,8 @@ document.getElementById('Password').addEventListener('keypress', function (e) {
 document.getElementById('btn-login').addEventListener('click', function (e) {
     var cur = this;
     e.preventDefault();
-    if (validateForm()) {
+    var validForm = validateLoginForm();
+    if (validForm.isValid) {
         loadingButton(cur);
         var form = document.getElementById("login_frm");
         var frmData = new FormData(form);
@@ -62,4 +43,6 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
             unloadingButton(cur);
         });
     }
+    else
+        showErrorAlert(null, validForm.errorMessage);
 });

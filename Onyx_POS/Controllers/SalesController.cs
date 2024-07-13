@@ -170,8 +170,8 @@ namespace Onyx_POS.Controllers
             var holdTransItemsHead = holdCentralBill ? _salesService.GetHoldTransHeadsRemote().FirstOrDefault(m => m.TrnNo == transNo) : _salesService.GetHoldTransHeads().FirstOrDefault(m => m.TrnNo == transNo);
 
             var holdTransItemsDetails = holdCentralBill ? _salesService.GetHoldTransDetailsRemote(transNo) : _salesService.GetHoldTransDetails(transNo);
-
-            holdTransItemsDetails = holdTransItemsDetails.Select(m => { m.TrnNo = transNo; return m; });
+            var recallTransNo = _commonService.GetTransactionNo();
+            holdTransItemsDetails = holdTransItemsDetails.Select(m => { m.TrnNo = recallTransNo; return m; });
             _salesService.InsertPosTempItems(holdTransItemsDetails);
             var holdTransNo = holdCentralBill ? _commonService.GetHoldTransactionNoRemote() : _commonService.GetHoldTransactionNo();
             var posHead = new PosHead
@@ -255,8 +255,7 @@ namespace Onyx_POS.Controllers
             var item = _commonService.GetParameterByType(key);
             var result = new CommonResponse
             {
-                Success = true,
-                Data = new { allowed = item?.Val == "Y" || key == "allowed" || _loggedInUser.U_Code == "001" }
+                Success = item?.Val == "Y" || key == "allowed" || _loggedInUser.U_Type == UserType.Supervisor.GetDisplayName() || _loggedInUser.U_Type == UserType.Manager.GetDisplayName(),
             };
             return Json(result);
         }

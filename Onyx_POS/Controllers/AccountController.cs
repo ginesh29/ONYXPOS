@@ -35,6 +35,23 @@ namespace Onyx_POS.Controllers
                 result.Message = CommonMessage.INVALIDUSER;
             return Json(result);
         }
+        [HttpPost]
+        [HttpPost]
+        public IActionResult ReAuthSupervisorManager(LoginModel model)
+        {
+            var result = new CommonResponse { Success = false };
+            model.Password = model.Password.Encrypt();
+            var validateUser = _authService.ValidateUser(model);
+            if (validateUser != null && (validateUser.U_Type == UserType.Supervisor.GetDisplayName() || validateUser.U_Type == UserType.Manager.GetDisplayName()))
+            {
+                result.Success = true;
+                result.Message = "Privilege granted to do this Operation";
+                _logService.PosLog("LOGIN", "Pos Logged in");
+            }
+            else
+                result.Message = "No Privilege to do this Operation";
+            return Json(result);
+        }
         public async Task<IActionResult> LogOut()
         {
             await _authService.SignOutAsync();

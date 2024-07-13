@@ -53,16 +53,6 @@ namespace Onyx_POS.Services
             var result = connection.QueryFirstOrDefault<int>(query);
             return result > 0;
         }
-        private bool HasTransactionRemote(string status)
-        {
-            var query = "select count(*) from PosTransHead ";
-            if (!string.IsNullOrEmpty(status))
-                query += $"where TrnStatus = '{status}'";
-            string _remoteConnectionString = GetRemoteConnectionString();
-            var connection = new SqlConnection(_remoteConnectionString);
-            var result = connection.QueryFirstOrDefault<int>(query);
-            return result > 0;
-        }
         private bool HasHoldTransaction(string status)
         {
             var query = "select count(*) from HoldtranHead ";

@@ -1,4 +1,35 @@
-﻿/*var isWeb = document.getElementById('AppType').value == "Web";*/
+﻿const intMaskOptions = {
+    alias: 'numeric',
+    radixPoint: '.',
+    autoGroup: true,
+    digits: 0,
+    digitsOptional: false,
+    placeholder: '0',
+}
+const intInputs = document.querySelectorAll('.int-input');
+intInputs.forEach(input => {
+    input.addEventListener('input', function (e) {
+        this.value = this.value.replace(/\D/g, '');
+        if (this.value.startsWith('0'))
+            this.value = this.value.substring(1);
+    });
+});
+function validateLoginForm() {
+    var userId = document.getElementById('UserId').value;
+    var password = document.getElementById('Password').value;
+    var errorMessage = "";
+    var isValid = true;
+    if (!userId) {
+        errorMessage += "Please enter User Id</br>";
+        isValid = false;
+    }
+    if (!password) {
+        errorMessage += "Please enter Password";
+        isValid = false;
+    }
+    return { isValid, errorMessage };
+}
+/*var isWeb = document.getElementById('AppType').value == "Web";*/
 var dropdownItems = document.querySelectorAll(".language-dropdown-item");
 dropdownItems.forEach(function (item) {
     item.addEventListener('click', function (e) {
@@ -91,7 +122,8 @@ function playBeep() {
 }
 function playErrorBeep() {
     const errorBeep = document.getElementById('error-beep');
-    errorBeep.play();
+    if (errorBeep)
+        errorBeep.play();
 }
 function showConfirmation(title, text, callback) {
     Swal.fire({
@@ -110,7 +142,7 @@ function showConfirmation(title, text, callback) {
 function showErrorAlert(title, text) {
     Swal.fire({
         title: title,
-        text: text,
+        html: text,
         icon: "warning",
         confirmButtonColor: "#0A60E0",
         cancelButtonColor: "#d33",

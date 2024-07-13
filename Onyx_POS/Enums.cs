@@ -31,4 +31,13 @@ namespace Onyx_POS
         [Display(Name = "RECALLED")]
         Recalled
     }
+    public enum UserType
+    {
+        [Display(Name = "S")]
+        Supervisor,
+        [Display(Name = "M")]
+        Manager,
+        [Display(Name = "C")]
+        Cashier,
+    }
 }

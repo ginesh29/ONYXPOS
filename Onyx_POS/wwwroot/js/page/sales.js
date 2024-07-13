@@ -66,7 +66,7 @@ function showQtyModal(e, modalType) {
     if (authType) {
         var allowedAuth = false;
         checkAuth(authType, function (response) {
-            allowedAuth = response.data.allowed;
+            allowedAuth = response.success;
             if (allowedAuth || authType == "allowed") {
                 document.getElementById("Qty").value = 1;
                 document.getElementById("Qty").closest('.form-group').parentElement.classList.add('d-none');
@@ -144,7 +144,7 @@ function holdBill(e) {
     var authType = e.dataset.authType;
     var allowedAuth = false;
     checkAuth(authType, function (response) {
-        allowedAuth = response.data.allowed;
+        allowedAuth = response.success;
         if (allowedAuth || authType == "allowed") {
             var table = document.getElementById("order-item-content");
             var items = table.rows.length;
@@ -169,7 +169,6 @@ function recallBill(transNo) {
     postAjax("/Sales/RecallBill", frmData, function (response) {
         showToastr(response.message, "success");
         loadOrderItems();
-        document.getElementById("bill-number").textContent = transNo;
         closeModal("HoldTransactionsModal");
     });
 }
@@ -177,7 +176,7 @@ function cancelBill(e, transNo) {
     var authType = e.dataset.authType;
     var allowedAuth = false;
     checkAuth(authType, function (response) {
-        allowedAuth = response.data.allowed;
+        allowedAuth = response.success;
         if (allowedAuth || authType == "allowed") {
             var table = document.getElementById("order-item-content");
             var items = table.rows.length;
@@ -243,7 +242,7 @@ function showRecallModal(e) {
     var authType = e.dataset.authType;
     var allowedAuth = false;
     checkAuth(authType, function (response) {
-        allowedAuth = response.data.allowed;
+        allowedAuth = response.success;
         if (allowedAuth || authType == "allowed") {
             loadAjax("/Sales/HoldTransactions", function (response) {
                 var modalId = "HoldTransactionsModal";
@@ -277,21 +276,26 @@ document.getElementById('ReAuthModal').addEventListener('hidden.bs.modal', funct
 });
 
 function saveReAuth() {
-    var frmData = new FormData();
-    var userId = document.getElementById(`UserId`).value;
-    var password = document.getElementById(`Password`).value;
-    var authType = document.getElementById(`ReAuthType`).value;
-    frmData.append("UserId", userId);
-    frmData.append("Password", password);
-    postAjax(`/account/login`, frmData, function (response) {
-        if (response.success) {
-            var el = document.querySelector(`[data-auth-type="${authType}"]`);
-            if (el)
-                el.dataset.authType = 'allowed';
-            closeModal("ReAuthModal");
-            showToastr("Reverified User successfully", "success");
-        }
-        else
-            showErrorAlert("Unauthorized User", response.message)
-    });
+    var validForm = validateLoginForm();
+    if (validForm.isValid) {
+        var frmData = new FormData();
+        var userId = document.getElementById(`UserId`).value;
+        var password = document.getElementById(`Password`).value;
+        var authType = document.getElementById(`ReAuthType`).value;
+        frmData.append("UserId", userId);
+        frmData.append("Password", password);
+        postAjax(`/account/ReAuthSupervisorManager`, frmData, function (response) {
+            if (response.success) {
+                var el = document.querySelector(`[data-auth-type="${authType}"]`);
+                if (el)
+                    el.dataset.authType = 'allowed';
+                closeModal("ReAuthModal");
+                showToastr("Reverified User successfully", "success");
+            }
+            else
+                showErrorAlert("Unauthorized Access", response.message)
+        });
+    }
+    else
+        showErrorAlert(null, validForm.errorMessage);
 }
