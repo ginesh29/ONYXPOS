@@ -71,11 +71,6 @@ function showToastr(msg, type) {
         }
     });
 }
-function removeToastr() {
-    var toastrContainer = document.getElementById('toastr-container');
-    if (toastrContainer)
-        toastrContainer.parentNode.removeChild(toastrContainer);
-}
 function getAjax(url, callback) {
     fetch(url)
         .then(response => {

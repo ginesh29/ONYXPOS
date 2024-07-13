@@ -74,6 +74,12 @@ namespace Onyx_POS.Services
             using var connection = _context.CreateConnection();
             connection.Query(query, parameters);
         }
+        public void DeletePosTransHead(int transNo)
+        {
+            var query = $"delete FROM PosTransHead where TrnNo = {transNo}";
+            using var connection = _context.CreateConnection();
+            connection.Query(query);
+        }
         public void UpsertPosTransHead(PosHead model)
         {
             string checkQuery = "SELECT COUNT(1) FROM PosTransHead WHERE TrnNo = @TrnNo";

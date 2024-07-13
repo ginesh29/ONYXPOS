@@ -171,12 +171,14 @@ namespace Onyx_POS.Controllers
 
             var holdTransItemsDetails = holdCentralBill ? _salesService.GetHoldTransDetailsRemote(transNo) : _salesService.GetHoldTransDetails(transNo);
             var recallTransNo = _commonService.GetTransactionNo();
-            holdTransItemsDetails = holdTransItemsDetails.Select(m => { m.TrnNo = recallTransNo; return m; });
+            var posTempItemsCount = _salesService.GetPosTempItems().Count();
+            holdTransItemsDetails = holdTransItemsDetails.Select(m => { m.TrnNo = recallTransNo; m.TrnSlNo = m.TrnSlNo + posTempItemsCount; return m; });
             _salesService.InsertPosTempItems(holdTransItemsDetails);
             var holdTransNo = holdCentralBill ? _commonService.GetHoldTransactionNoRemote() : _commonService.GetHoldTransactionNo();
+            _salesService.DeletePosTransHead(transNo);
             var posHead = new PosHead
             {
-                TrnNo = transNo,
+                TrnNo = recallTransNo,
                 BillRefNo = _commonService.GetBillRefNo(transNo),
                 PosId = _posDetail.P_PosId,
                 User = _loggedInUser.U_Code,
@@ -203,7 +205,7 @@ namespace Onyx_POS.Controllers
                 TrnDate = holdTransItemsHead.TrnDate,
                 RPosId = _posDetail.P_PosId,
                 RTrnDate = DateTime.Now,
-                RTrnNo = holdTransNo,
+                RTrnNo = recallTransNo,
                 RTrnUser = _loggedInUser.U_Code,
             };
             if (holdCentralBill)
