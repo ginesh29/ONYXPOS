@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Onyx_POS.Data;
-using Onyx_POS.HostedService;
 using Onyx_POS.Services;
-using Onyx_POS.SignalR;
 using System.Globalization;
+using System.Net;
+using System.Net.WebSockets;
+using System.Text;
 internal class Program
 {
     private static void Main(string[] args)
@@ -20,7 +21,6 @@ internal class Program
         builder.Services.AddSingleton<AuthService>();
         builder.Services.AddSingleton<CommonService>();
         builder.Services.AddSingleton<SalesService>();
-        builder.Services.AddHostedService<DatabaseService>();
         builder.Services.AddSingleton<LogService>();
         // Add services to the container.
         builder.Services.AddControllersWithViews()
@@ -45,9 +45,7 @@ internal class Program
         builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
         builder.WebHost.UseElectron(args);
         builder.Services.AddElectron();
-        builder.Services.AddSignalR();
         var app = builder.Build();
-
         // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
@@ -73,12 +71,32 @@ internal class Program
         app.MapControllerRoute(
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
-
+        app.UseWebSockets();
+        app.Map("/ws", async context =>
+        {
+            if (context.WebSockets.IsWebSocketRequest)
+            {
+                using var ws = await context.WebSockets.AcceptWebSocketAsync();
+                while (true)
+                {
+                    var isConnected = CheckRemoteConnection();
+                    var bytes = Encoding.UTF8.GetBytes(isConnected.ToString());
+                    var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
+                    if (ws.State == WebSocketState.Open)
+                        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+                    else if (ws.State == WebSocketState.Closed || ws.State == WebSocketState.Aborted)
+                    {
+                        break;
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+            else
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        });
         if (HybridSupport.IsElectronActive)
             CreateElectronWindow();
-        app.MapHub<ConnectionStatusHub>("/connectionStatusHub");
         app.Run();
-
         static async void CreateElectronWindow()
         {
             var windowOptions = new BrowserWindowOptions
@@ -97,6 +115,14 @@ internal class Program
                 mainWindow.Maximize();
                 mainWindow.Show();
             };
+        }
+        bool CheckRemoteConnection()
+        {
+            using var scope = app.Services.CreateScope();
+            var services = scope.ServiceProvider;
+            var commonService = services.GetRequiredService<CommonService>();
+            bool isConnected = commonService.CheckDatabaseConnection();
+            return isConnected;
         }
     }
 }

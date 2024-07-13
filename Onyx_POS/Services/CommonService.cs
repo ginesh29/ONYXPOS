@@ -23,6 +23,20 @@ namespace Onyx_POS.Services
             string dbName = "POSServer";
             return $"Server={ServerName};Initial catalog={dbName};uid={UserId}; pwd={Password};TrustServerCertificate=True;Connection Timeout=120;";
         }
+        public bool CheckDatabaseConnection()
+        {
+            try
+            {
+                var _remoteConnectionString = GetRemoteConnectionString();
+                using var connection = new SqlConnection(_remoteConnectionString);
+                connection.Open();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
         public PosCtrlModel GetCuurentPosCtrl()
         {
             var query = "select * from PosCtrl";

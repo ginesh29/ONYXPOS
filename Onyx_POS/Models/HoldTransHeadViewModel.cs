@@ -15,7 +15,7 @@
         public string TrnUser { get; set; }
         public int TrnShift { get; set; }
         public decimal? TrnTDisc { get; set; }
-        public string? TrnLoc { get; set; }
+        public string TrnLoc { get; set; }
         public decimal? RPosId { get; set; }
         public decimal? RTrnno { get; set; }
         public string RTrnUser { get; set; }
