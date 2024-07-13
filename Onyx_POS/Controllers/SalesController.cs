@@ -127,12 +127,12 @@ namespace Onyx_POS.Controllers
             };
             if (holdCentralBill)
             {
-                _salesService.InsertHoldTransRemote(posTempItems);
+                _salesService.InsertHoldTransDetailsRemote(posTempItems);
                 _salesService.UpsertHoldTransHeadRemote(holdTransHead);
             }
             else
             {
-                _salesService.InsertHoldTrans(posTempItems);
+                _salesService.InsertHoldTransDetails(posTempItems);
                 _salesService.UpsertHoldTransHead(holdTransHead);
             }
             var posHead = new PosHead
@@ -164,10 +164,9 @@ namespace Onyx_POS.Controllers
             return PartialView("_HoldTransactionsModal", holdTransHeads);
         }
         [HttpPost]
-        public IActionResult RecallBill()
+        public IActionResult RecallBill(int transNo)
         {
             bool holdCentralBill = _commonService.GetParameterByType("HOLDCENTRALBILL").Val == "Y";
-            var transNo = _commonService.GetTransactionNo();
             var holdTransItemsHead = holdCentralBill ? _salesService.GetHoldTransHeadsRemote().FirstOrDefault(m => m.TrnNo == transNo) : _salesService.GetHoldTransHeads().FirstOrDefault(m => m.TrnNo == transNo);
 
             var holdTransItemsDetails = holdCentralBill ? _salesService.GetHoldTransDetailsRemote(transNo) : _salesService.GetHoldTransDetails(transNo);
@@ -208,9 +207,15 @@ namespace Onyx_POS.Controllers
                 RTrnUser = _loggedInUser.U_Code,
             };
             if (holdCentralBill)
+            {
                 _salesService.UpsertHoldTransHeadRemote(holdTransHead);
+                _salesService.DeleteHoldTransDetailsRemote(transNo);
+            }
             else
+            {
                 _salesService.UpsertHoldTransHead(holdTransHead);
+                _salesService.DeleteHoldTransDetails(transNo);
+            }
             _logService.PosLog("Recall", $"Recall  Bill {transNo}");
             var result = new CommonResponse
             {
@@ -251,7 +256,7 @@ namespace Onyx_POS.Controllers
             var result = new CommonResponse
             {
                 Success = true,
-                Data = new { allowed = item?.Val == "Y" || key == "allowed" }
+                Data = new { allowed = item?.Val == "Y" || key == "allowed" || _loggedInUser.U_Code == "001" }
             };
             return Json(result);
         }

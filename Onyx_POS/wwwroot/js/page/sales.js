@@ -20,7 +20,7 @@ const numpadInputs = document.querySelectorAll('.numpad-input');
 const numButtons = document.querySelectorAll('.keypad-button');
 let activeInput = document.getElementById("Barcode-General");
 
-var inputElements = document.querySelectorAll('input[type="text"]');
+var inputElements = document.querySelectorAll('input[type="text"], input[type="password"]');
 inputElements.forEach(function (inputElement) {
     inputElement.addEventListener("focus", function (e) {
         activeInput = event.target;
@@ -169,6 +169,7 @@ function recallBill(transNo) {
     postAjax("/Sales/RecallBill", frmData, function (response) {
         showToastr(response.message, "success");
         loadOrderItems();
+        document.getElementById("bill-number").textContent = transNo;
         closeModal("HoldTransactionsModal");
     });
 }

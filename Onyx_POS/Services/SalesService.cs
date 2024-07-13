@@ -106,8 +106,9 @@ namespace Onyx_POS.Services
             else
                 connection.Execute(insertQuery, parameters);
         }
-        public void InsertHoldTrans(IEnumerable<POSTempItemModel> posTempItems)
+        public void InsertHoldTransDetails(IEnumerable<POSTempItemModel> posTempItems)
         {
+            DeleteHoldTransDetails(posTempItems.FirstOrDefault().TrnNo);
             var query = @"INSERT INTO [dbo].[HoldtranDetail] ([HBillRefNo], [TrnNo], [TrnSlNo], [TrnDt], [TrnDept], [TrnPlu], [TrnQty], [TrnPrice], [TrnUnit], [TrnPackQty], [TrnPrLvl], [TrnLDisc], [TrnTDisc], [TrnLDiscPercent], [TrnTDiscType], [TrnMode], [TrnType], [TrnDeptPlu], [TrnNetVal], [TrnUser], [TrnTime], [TrnErrPlu], [TrnLoc], [TrnPosId], [TrnShift], [TrnAmt], [TrnParty], [TrnSalesman], [TrnDesc], [TrnFlag], [TrnName], [TrnBarcode]) 
                 VALUES (@HBillRefNo, @TrnNo, @TrnSlNo, @TrnDt, @TrnDept, @TrnPlu, @TrnQty, @TrnPrice, @TrnUnit, @TrnPackQty, @TrnPrLvl, @TrnLDisc, @TrnTDisc, @TrnLDiscPercent, @TrnTDiscType, @TrnMode, @TrnType, @TrnDeptPlu, @TrnNetVal, @TrnUser, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnPosId, @TrnShift, @TrnAmt, @TrnParty, @TrnSalesman, @TrnDesc, @TrnFlag, @TrnName, @TrnBarcode)";
 
@@ -125,8 +126,9 @@ namespace Onyx_POS.Services
                 throw new Exception("Error inserting data", ex);
             }
         }
-        public void InsertHoldTransRemote(IEnumerable<POSTempItemModel> posTempItems)
+        public void InsertHoldTransDetailsRemote(IEnumerable<POSTempItemModel> posTempItems)
         {
+            DeleteHoldTransDetailsRemote(posTempItems.FirstOrDefault().TrnNo);
             var query = @"INSERT INTO [dbo].[HoldtranDetail] ([HBillRefNo], [TrnNo], [TrnSlNo], [TrnDt], [TrnDept], [TrnPlu], [TrnQty], [TrnPrice], [TrnUnit], [TrnPackQty], [TrnPrLvl], [TrnLDisc], [TrnTDisc], [TrnLDiscPercent], [TrnTDiscType], [TrnMode], [TrnType], [TrnDeptPlu], [TrnNetVal], [TrnUser], [TrnTime], [TrnErrPlu], [TrnLoc], [TrnPosId], [TrnShift], [TrnAmt], [TrnParty], [TrnSalesman], [TrnDesc], [TrnFlag], [TrnName], [TrnBarcode]) 
                 VALUES (@HBillRefNo, @TrnNo, @TrnSlNo, @TrnDt, @TrnDept, @TrnPlu, @TrnQty, @TrnPrice, @TrnUnit, @TrnPackQty, @TrnPrLvl, @TrnLDisc, @TrnTDisc, @TrnLDiscPercent, @TrnTDiscType, @TrnMode, @TrnType, @TrnDeptPlu, @TrnNetVal, @TrnUser, @TrnTime, @TrnErrPlu, @TrnLoc, @TrnPosId, @TrnShift, @TrnAmt, @TrnParty, @TrnSalesman, @TrnDesc, @TrnFlag, @TrnName, @TrnBarcode)";
 
@@ -222,12 +224,24 @@ namespace Onyx_POS.Services
             var data = connection.Query<HoldTransHeadViewModel>(query);
             return data;
         }
-        public IEnumerable<POSTempItemModel> GetHoldTransDetails(int transNo)
+        public void DeleteHoldTransDetails(int transNo)
         {
+            var query = $"delete FROM HoldTranDetail where TrnNo = {transNo}";
+            using var connection = _context.CreateConnection();
+            connection.Query(query);
+        }
+        public IEnumerable<POSTempItemModel> GetHoldTransDetails(int transNo)
+        {            
             var query = $"select * FROM HoldTranDetail where TrnNo = {transNo}";
             using var connection = _context.CreateConnection();
             var data = connection.Query<POSTempItemModel>(query);
             return data;
+        }
+        public void DeleteHoldTransDetailsRemote(int transNo)
+        {            
+            var query = $"delete FROM HoldTranDetail where TrnNo = {transNo}";
+            var connection = new SqlConnection(_remoteConnectionString);
+            connection.Query(query);
         }
         public IEnumerable<POSTempItemModel> GetHoldTransDetailsRemote(int transNo)
         {
