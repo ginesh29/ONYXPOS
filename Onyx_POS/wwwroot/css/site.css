@@ -8,8 +8,11 @@ body {
 .custom-toastr-success {
     background-color: #17C653 !important;
 }
-
-    .custom-toastr-success * {
+.custom-toastr-danger {
+    background-color: #F8285A !important;
+}
+    .custom-toastr-success *,
+    .custom-toastr-danger * {
         color: #fff !important;
     }
 

@@ -97,7 +97,7 @@ function showQtyModal(e, modalType) {
                     showModal("PriceCheckModal");
             }
             else
-                alert(allowedAuth);
+                showReAuthModal(authType);
         });
     }
     if (modalType == "PriceCheck")
@@ -129,7 +129,7 @@ function addSaleItem(barcode) {
     postAjax(`/Sales/AddItem`, frmData, function (response) {
         if (response.success) {
             playBeep();
-            showSuccessToastr(response.message);
+            showToastr(response.message, "success");
             loadOrderItems();
             if (modalType != "General")
                 closeModal("PriceCheckModal");
@@ -151,7 +151,7 @@ function holdBill(e) {
             if (items > 1) {
                 var frmData = new FormData();
                 postAjax("/Sales/HoldBill", frmData, function (response) {
-                    showSuccessToastr(response.message);
+                    showToastr(response.message, "success");
                     loadOrderItems();
                     incrementTransNo();
                 });
@@ -160,16 +160,15 @@ function holdBill(e) {
                 showErrorAlert("No Transactions available");
         }
         else
-            alert(allowedAuth);
+            showReAuthModal(authType);
     })
 }
 function recallBill(transNo) {
     var frmData = new FormData();
     frmData.append("transNo", transNo);
     postAjax("/Sales/RecallBill", frmData, function (response) {
-        showSuccessToastr(response.message);
+        showToastr(response.message, "success");
         loadOrderItems();
-        incrementTransNo();
         closeModal("HoldTransactionsModal");
     });
 }
@@ -186,7 +185,7 @@ function cancelBill(e, transNo) {
                     var frmData = new FormData();
                     frmData.append("transNo", transNo);
                     postAjax("/Sales/CancelBill", frmData, function (response) {
-                        showSuccessToastr(response.message);
+                        showToastr(response.message, "success");
                         loadOrderItems();
                         incrementTransNo();
                     });
@@ -195,7 +194,7 @@ function cancelBill(e, transNo) {
                 showErrorAlert("No Transactions available");
         }
         else
-            alert(allowedAuth);
+            showReAuthModal(authType);
     })
 }
 function onEnter(numpadFor) {
@@ -207,6 +206,8 @@ function onEnter(numpadFor) {
         var modalType = document.getElementById("PriceCheckModalType").value;
         if (modalType == "PriceCheck")
             priceCheck(numpadFor)
+        if (modalType == "ReAuth")
+            saveReAuth();
         else {
             var barcode = document.getElementById("Barcode-PriceCheck").value;
             addSaleItem(barcode);
@@ -237,7 +238,7 @@ function incrementTransNo() {
     var transNo = el.textContent;
     el.textContent = Number(transNo) + 1;
 }
-function showHoldTransactionsModal(e) {
+function showRecallModal(e) {
     var authType = e.dataset.authType;
     var allowedAuth = false;
     checkAuth(authType, function (response) {
@@ -250,12 +251,46 @@ function showHoldTransactionsModal(e) {
             });
         }
         else
-            alert(allowedAuth);
+            showReAuthModal(authType);
     })
 }
 function loadRecallItemBill(transNo) {
     loadAjax(`/Sales/FetchRecallItemBill?transNo=${transNo}`, function (response) {
         document.getElementById(`bill-${transNo}`).innerHTML = response;
         document.getElementById(`bill-${transNo}`).classList.remove("d-none");
+    });
+}
+function showReAuthModal(authType) {
+    document.getElementById("ReAuthType").value = authType;
+    document.getElementById("PriceCheckModalType").value = "ReAuth";
+    showModal("ReAuthModal");
+}
+document.getElementById('ReAuthModal').addEventListener('shown.bs.modal', function () {
+    activeInput = document.getElementById("UserId");
+});
+document.getElementById('ReAuthModal').addEventListener('hidden.bs.modal', function () {
+    document.getElementById(`UserId`).value = "";
+    document.getElementById(`Password`).value = "";
+    document.getElementById("PriceCheckModalType").value = "General";
+    activeInput = document.getElementById("Barcode-General");
+});
+
+function saveReAuth() {
+    var frmData = new FormData();
+    var userId = document.getElementById(`UserId`).value;
+    var password = document.getElementById(`Password`).value;
+    var authType = document.getElementById(`ReAuthType`).value;
+    frmData.append("UserId", userId);
+    frmData.append("Password", password);
+    postAjax(`/account/login`, frmData, function (response) {
+        if (response.success) {
+            var el = document.querySelector(`[data-auth-type="${authType}"]`);
+            if (el)
+                el.dataset.authType = 'allowed';
+            closeModal("ReAuthModal");
+            showToastr("Reverified User successfully", "success");
+        }
+        else
+            showErrorAlert("Unauthorized User", response.message)
     });
 }

@@ -50,7 +50,7 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                 var returnUrl = document.getElementById("returnUrl").value;
                 returnUrl = returnUrl ? returnUrl : "/";
                 setTimeout(function () {
-                    showSuccessToastr(response.message);
+                    showToastr(response.message, "success");
                     setTimeout(function () {
                         unloadingButton(this);
                         window.location.href = returnUrl;
@@ -58,7 +58,7 @@ document.getElementById('btn-login').addEventListener('click', function (e) {
                 }, 500)
             }
             else
-                showSuccessToastr(response.message, "error");
+                showErrorAlert("Unauthorized User", response.message)
             unloadingButton(cur);
         });
     }

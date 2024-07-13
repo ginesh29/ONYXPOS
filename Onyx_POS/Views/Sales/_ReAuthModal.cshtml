@@ -1,0 +1,43 @@
+﻿@{
+    ViewData["NumpadFor"] = "ReAuth";
+}
+<div class="modal fade" tabindex="-1" id="ReAuthModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Reverify User</h3>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="ReAuthType" />
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="input-group mb-5">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-user fs-4"></i>
+                                    </span>
+                                    <input type="text" class="form-control numpad-input" id="UserId" name="UserId" placeholder="User Id" autofocus />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <div class="input-group mb-5">
+                                    <span class="input-group-text">
+                                        <i class="fa-solid fa-lock fs-4"></i>
+                                    </span>
+                                    <input type="password" class="form-control numpad-input" id="Password" name="Password" placeholder="Password" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <partial name="_Numpad" view-data="ViewData" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline btn-outline-solid btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

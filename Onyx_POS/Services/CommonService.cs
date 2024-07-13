@@ -44,43 +44,105 @@ namespace Onyx_POS.Services
             var data = connection.QueryFirstOrDefault<ParameterModel>(query);
             return data;
         }
-        public bool HasTransaction(bool active = false)
+        private bool HasTransaction(string status)
         {
             var query = "select count(*) from PosTransHead ";
-            if (active)
-                query += "where TrnStatus = 'NEW'";
+            if (!string.IsNullOrEmpty(status))
+                query += $"where TrnStatus = '{status}'";
             using var connection = _context.CreateConnection();
             var result = connection.QueryFirstOrDefault<int>(query);
             return result > 0;
         }
-        public int GetCurrentTransactionNo()
+        private bool HasTransactionRemote(string status)
+        {
+            var query = "select count(*) from PosTransHead ";
+            if (!string.IsNullOrEmpty(status))
+                query += $"where TrnStatus = '{status}'";
+            string _remoteConnectionString = GetRemoteConnectionString();
+            var connection = new SqlConnection(_remoteConnectionString);
+            var result = connection.QueryFirstOrDefault<int>(query);
+            return result > 0;
+        }
+        private bool HasHoldTransaction(string status)
+        {
+            var query = "select count(*) from HoldtranHead ";
+            if (!string.IsNullOrEmpty(status))
+                query += $"where TrnStatus = '{status}'";
+            using var connection = _context.CreateConnection();
+            var result = connection.QueryFirstOrDefault<int>(query);
+            return result > 0;
+        }
+        private bool HasHoldTransactionRemote(string status)
+        {
+            var query = "select count(*) from HoldtranHead ";
+            if (!string.IsNullOrEmpty(status))
+                query += $"where TrnStatus = '{status}'";
+            string _remoteConnectionString = GetRemoteConnectionString();
+            var connection = new SqlConnection(_remoteConnectionString);
+            var result = connection.QueryFirstOrDefault<int>(query);
+            return result > 0;
+        }
+        private int GetCurrentTransactionNo()
         {
             var query = "SELECT MAX(TrnNo) AS TrnNo FROM PosTransHead";
             using var connection = _context.CreateConnection();
             var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
             return maxTrnNo ?? 1;
         }
-        public int GetNextTransactionNo()
+        private int GetNextTransactionNo()
         {
             var query = "SELECT MAX(TrnNo) AS TrnNo FROM PosTransHead";
             using var connection = _context.CreateConnection();
             var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
             return maxTrnNo.HasValue ? maxTrnNo.Value + 1 : 1;
         }
+        public int GetTransactionNo()
+        {
+            bool hasTransaction = HasTransaction(TransStatus.New.GetDisplayName());
+            var transNo = hasTransaction ? GetCurrentTransactionNo() : GetNextTransactionNo();
+            return transNo;
+        }
+        private int GetCurrentHoldTransactionNo()
+        {
+            var query = "SELECT MAX(TrnNo) AS TrnNo FROM HoldTranHead";
+            using var connection = _context.CreateConnection();
+            var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
+            return maxTrnNo ?? 1;
+        }
+        private int GetCurrentHoldTransactionNoRemote()
+        {
+            var query = "SELECT MAX(TrnNo) AS TrnNo FROM HoldTranHead";
+            string _remoteConnectionString = GetRemoteConnectionString();
+            var connection = new SqlConnection(_remoteConnectionString);
+            var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
+            return maxTrnNo ?? 1;
+        }
         public int GetHoldTransactionNo()
+        {
+            bool hasHoldTransaction = HasHoldTransaction(TransStatus.Recalled.GetDisplayName());
+            var transNo = hasHoldTransaction ? GetCurrentHoldTransactionNo() : GetNextHoldTransactionNo();
+            return transNo;
+        }
+        private int GetNextHoldTransactionNo()
         {
             var query = "SELECT MAX(TrnNo) AS TrnNo FROM HoldTranHead";
             using var connection = _context.CreateConnection();
             var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
             return maxTrnNo.HasValue ? maxTrnNo.Value + 1 : 1;
         }
-        public int GetHoldTransactionNoRemote()
+        private int GetNextHoldTransactionNoRemote()
         {
             var query = "SELECT MAX(TrnNo) AS TrnNo FROM HoldTranHead";
             string _remoteConnectionString = GetRemoteConnectionString();
             var connection = new SqlConnection(_remoteConnectionString);
             var maxTrnNo = connection.QueryFirstOrDefault<int?>(query);
             return maxTrnNo.HasValue ? maxTrnNo.Value + 1 : 1;
+        }
+        public int GetHoldTransactionNoRemote()
+        {
+            bool hasHoldTransactionRemote = HasHoldTransactionRemote(TransStatus.Recalled.GetDisplayName());
+            var transNo = hasHoldTransactionRemote ? GetCurrentHoldTransactionNoRemote() : GetNextHoldTransactionNoRemote();
+            return transNo;
         }
         public string GetBillRefNo(int transNo)
         {

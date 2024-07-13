@@ -17,8 +17,7 @@ namespace Onyx_POS.Controllers
         public IActionResult Order()
         {
             var terminalDetail = _commonService.GetCuurentPosCtrl();
-            bool hasTransaction = _commonService.HasTransaction(true);
-            var transNo = hasTransaction ? _commonService.GetCurrentTransactionNo() : _commonService.GetNextTransactionNo();
+            var transNo = _commonService.GetTransactionNo();
             ViewBag.TransactionNo = transNo;
             ViewBag.TerminalDetail = terminalDetail;
             return View();
@@ -44,8 +43,7 @@ namespace Onyx_POS.Controllers
             {
                 var shift = _commonService.GetActiveShiftDetail();
                 var counter = _commonService.GetCuurentPosCtrl();
-                bool hasTransaction = _commonService.HasTransaction(true);
-                var transNo = hasTransaction ? _commonService.GetCurrentTransactionNo() : _commonService.GetNextTransactionNo();
+                var transNo = _commonService.GetTransactionNo();
                 if (validQty)
                 {
                     var totalItems = posTempItems.Count();
@@ -84,7 +82,7 @@ namespace Onyx_POS.Controllers
                         TotalQty = updatedPosTempItems.Sum(m => m.TrnQty),
                         TotalItems = updatedPosTempItems.Count()
                     };
-                    _salesService.UpdatePosTransHead(posHead);
+                    _salesService.UpsertPosTransHead(posHead);
                 }
             }
             var result = new CommonResponse
@@ -103,8 +101,8 @@ namespace Onyx_POS.Controllers
         public IActionResult HoldBill()
         {
             bool holdCentralBill = _commonService.GetParameterByType("HOLDCENTRALBILL").Val == "Y";
-            int transNo = _commonService.GetCurrentTransactionNo();
-            int holdTransNo = holdCentralBill ? _commonService.GetHoldTransactionNoRemote() : _commonService.GetHoldTransactionNo();
+            var transNo = _commonService.GetTransactionNo();
+            var holdTransNo = holdCentralBill ? _commonService.GetHoldTransactionNoRemote() : _commonService.GetHoldTransactionNo();
             var posTempItems = _salesService.GetPosTempItems().Select(m =>
             {
                 m.TrnNo = holdTransNo;
@@ -130,12 +128,12 @@ namespace Onyx_POS.Controllers
             if (holdCentralBill)
             {
                 _salesService.InsertHoldTransRemote(posTempItems);
-                _salesService.UpdateHoldTransHeadRemote(holdTransHead);
+                _salesService.UpsertHoldTransHeadRemote(holdTransHead);
             }
             else
             {
                 _salesService.InsertHoldTrans(posTempItems);
-                _salesService.UpdateHoldTransHead(holdTransHead);
+                _salesService.UpsertHoldTransHead(holdTransHead);
             }
             var posHead = new PosHead
             {
@@ -149,7 +147,7 @@ namespace Onyx_POS.Controllers
                 TotalQty = posTempItems.Sum(m => m.TrnQty),
                 TotalItems = posTempItems.Count()
             };
-            _salesService.UpdatePosTransHead(posHead);
+            _salesService.UpsertPosTransHead(posHead);
             _salesService.ClearPosTempItems(transNo);
             _logService.PosLog("Hold", $"Bill on Hold : {transNo}");
             var result = new CommonResponse
@@ -166,16 +164,17 @@ namespace Onyx_POS.Controllers
             return PartialView("_HoldTransactionsModal", holdTransHeads);
         }
         [HttpPost]
-        public IActionResult RecallBill(int transNo)
+        public IActionResult RecallBill()
         {
             bool holdCentralBill = _commonService.GetParameterByType("HOLDCENTRALBILL").Val == "Y";
+            var transNo = _commonService.GetTransactionNo();
             var holdTransItemsHead = holdCentralBill ? _salesService.GetHoldTransHeadsRemote().FirstOrDefault(m => m.TrnNo == transNo) : _salesService.GetHoldTransHeads().FirstOrDefault(m => m.TrnNo == transNo);
 
             var holdTransItemsDetails = holdCentralBill ? _salesService.GetHoldTransDetailsRemote(transNo) : _salesService.GetHoldTransDetails(transNo);
 
-            int recallTransNo = _commonService.GetNextTransactionNo();
-            holdTransItemsDetails = holdTransItemsDetails.Select(m => { m.TrnNo = recallTransNo; return m; });
+            holdTransItemsDetails = holdTransItemsDetails.Select(m => { m.TrnNo = transNo; return m; });
             _salesService.InsertPosTempItems(holdTransItemsDetails);
+            var holdTransNo = holdCentralBill ? _commonService.GetHoldTransactionNoRemote() : _commonService.GetHoldTransactionNo();
             var posHead = new PosHead
             {
                 TrnNo = transNo,
@@ -188,7 +187,7 @@ namespace Onyx_POS.Controllers
                 TotalQty = holdTransItemsDetails.Sum(m => m.TrnQty),
                 TotalItems = holdTransItemsDetails.Count(),
             };
-            _salesService.UpdatePosTransHead(posHead);
+            _salesService.UpsertPosTransHead(posHead);
             var holdTransHead = new HoldTransHead
             {
                 TrnNo = holdTransItemsHead.TrnNo,
@@ -205,13 +204,13 @@ namespace Onyx_POS.Controllers
                 TrnDate = holdTransItemsHead.TrnDate,
                 RPosId = _posDetail.P_PosId,
                 RTrnDate = DateTime.Now,
-                RTrnNo = transNo,
+                RTrnNo = holdTransNo,
                 RTrnUser = _loggedInUser.U_Code,
             };
             if (holdCentralBill)
-                _salesService.UpdateHoldTransHeadRemote(holdTransHead);
+                _salesService.UpsertHoldTransHeadRemote(holdTransHead);
             else
-                _salesService.UpdateHoldTransHead(holdTransHead);
+                _salesService.UpsertHoldTransHead(holdTransHead);
             _logService.PosLog("Recall", $"Recall  Bill {transNo}");
             var result = new CommonResponse
             {
@@ -236,7 +235,7 @@ namespace Onyx_POS.Controllers
                 TotalQty = posTempItems.Sum(m => m.TrnQty),
                 TotalItems = posTempItems.Count()
             };
-            _salesService.UpdatePosTransHead(posHead);
+            _salesService.UpsertPosTransHead(posHead);
             _salesService.ClearPosTempItems(transNo);
             _logService.PosLog("Cancel", $"Cancel  Bill {transNo}");
             var result = new CommonResponse
@@ -252,7 +251,7 @@ namespace Onyx_POS.Controllers
             var result = new CommonResponse
             {
                 Success = true,
-                Data = new { allowed = item.Val == "Y" || _loggedInUser.U_Code == "001" }
+                Data = new { allowed = item?.Val == "Y" || key == "allowed" }
             };
             return Json(result);
         }

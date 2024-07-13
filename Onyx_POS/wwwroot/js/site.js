@@ -28,15 +28,15 @@ function unloadingButton(btn) {
         btn.disabled = false;
     }, 1000);
 }
-function showSuccessToastr(msg) {
+function showToastr(msg, type) {
     Swal.fire({
         toast: true,
         position: "top-end",
         showConfirmButton: false,
         timer: 3000,
-        title: msg,  
+        title: msg,
         customClass: {
-            popup: 'custom-toastr-success',
+            popup: `custom-toastr-${type}`,
         }
     });
 }
